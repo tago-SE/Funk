@@ -7,9 +7,7 @@ public class Main {
         for (int i = 0; i < n; i++) {
             f[i] = (float) (Math.random()%n*n);
         }
-
-       // MergeSort.sort(f, true);
-        QuickSort.sort(f);
+        QuickSort.sort(f, true);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) {
             sb.append(f[i]).append("\n");
