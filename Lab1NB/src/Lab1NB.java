@@ -38,14 +38,15 @@ public class Lab1NB {
     private static void lab1_MergeSort_treshold() {
         SortStrategy[] s = {SerialMergeSort.instance, SerialArraySort.instance, ParallelMergeSort.instance};
         SortStrategy sorter = s[0];
+        System.out.println("Algo\tSize\tns\tms\tcores");
         for (int size = 10; size <= 100000000; size *= 10) {
             float[] a = sorter.randomArray(size, RANGE);
             for (int cores = 1; cores < 9; cores *= 2) {
                 sorter.setCores(cores);
-                for (int algo = 0; algo < 1; algo++) {
+                for (int algo = 0; algo < 3; algo++) {
                     long elapsed = sorter.sort(a.clone());
-                    System.out.println(sorter.getClass().getName() + " | " +  size + " | " + elapsed + "ns (" + 
-                            TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS) + "ms) with " + sorter.cores + " cores.");
+                    System.out.println(algo + "\t" +  size + "\t" + elapsed + "\t" + 
+                            TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS) + "\t" + sorter.cores + "\t");
                 }
             }
         }
@@ -57,7 +58,6 @@ public class Lab1NB {
         int size = (int) Math.pow(10, E);
         long elapsed;
        
-        System.out.println("X" + (1 << 13));
         
        // System.out.println("Max cores: " + maxCores);
       //  System.out.println("Array size [" + E + "] = " + size);
