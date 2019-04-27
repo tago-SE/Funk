@@ -28,7 +28,7 @@ public class ParallelMergeSort extends SortStrategy {
    
     private static class SortTask extends RecursiveAction {
  
-        private static int threshold = 1;
+        private static int threshold = 8192;
         
         private float[] a;
         private int left, right;

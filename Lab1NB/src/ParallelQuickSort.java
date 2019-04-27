@@ -57,8 +57,10 @@ public class ParallelQuickSort extends SortStrategy {
             int up = first;
             int down = last;
             do {
-                while (up < last && pivot >= a[up]) up++;
-                while (pivot < a[down])             down--;
+                while (up < last && pivot >= a[up]) 
+                    up++;
+                while (pivot < a[down])             
+                    down--;
                 if (up < down) {
                     temp = a[up];
                     a[up] = a[down];

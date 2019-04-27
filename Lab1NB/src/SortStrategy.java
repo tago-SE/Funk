@@ -17,6 +17,7 @@ public class SortStrategy {
     
     private static final String FILE_NAME = "rdm_arr.txt";
     
+    
     /**
      * Populates a random array of floats with a given size and range starting 
      * at 0.0 and ending at 0.0 + range.
@@ -38,7 +39,7 @@ public class SortStrategy {
     }
     
     public void setThreshold(int t) {
-        
+        throw new IllegalStateException("Abstract method");
     }
     
     public static void writeToFile(float[] a)  {
