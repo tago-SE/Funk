@@ -37,6 +37,10 @@ public class SortStrategy {
         return cores;
     }
     
+    public void setThreshold(int t) {
+        
+    }
+    
     public static void writeToFile(float[] a)  {
         try {
             FileOutputStream fos = new FileOutputStream(FILE_NAME);

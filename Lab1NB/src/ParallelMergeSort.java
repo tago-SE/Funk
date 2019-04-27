@@ -3,23 +3,10 @@ import java.util.Arrays;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *
- * @author tiago
- */
 public class ParallelMergeSort extends SortStrategy {
 
     private ParallelMergeSort() {}
     
-    /**
-     * Singleton instance
-     */
     public static final ParallelMergeSort instance = new ParallelMergeSort();
     
     @Override
@@ -31,10 +18,17 @@ public class ParallelMergeSort extends SortStrategy {
         pool.invoke(mainTask);
         return System.nanoTime() - start;
     }
+    
+    @Override
+    public void setThreshold(int t) {
+        if (t < 1) 
+            t = 1;
+        SortTask.threshold = t;
+    }
    
     private static class SortTask extends RecursiveAction {
  
-        private final int THRESHOLD = 1;
+        private static int threshold = 1;
         
         private float[] a;
         private int left, right;
@@ -74,8 +68,8 @@ public class ParallelMergeSort extends SortStrategy {
         @Override
         protected void compute() {
             if (left < right) {
-                if (right - left <= THRESHOLD) {
-                    Arrays.sort(a, left, right);
+                if (right - left < threshold) {
+                    Arrays.sort(a, left, right + 1);
                 } else {
                     int mid = (left + right)/2;
                     invokeAll(

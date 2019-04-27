@@ -22,7 +22,8 @@ public class Lab1NB {
         SerialMergeSort.instance,
         SerialArraySort.instance,
         ParallelSort.instance,
-        ParallelMergeSort.instance
+        ParallelMergeSort.instance,
+        ParallelQuickSort.instance
     };
     
     private static int E                            = 2;
@@ -48,16 +49,27 @@ public class Lab1NB {
        
         
         float[] a;
+        
         SortStrategy strategy = STRATEGIES[1];
-        a = SortStrategy.randomArray(size, RANGE);
+         a = SortStrategy.randomArray(size, RANGE);
+         
+       
+       
         strategy.sort(a);
         strategy.print(a);
         System.out.println("sorted = " + strategy.isSorted(a));
+       
         a = SortStrategy.randomArray(size, RANGE);
         strategy = STRATEGIES[4];
         strategy.sort(a);
         strategy.print(a);
         System.out.println("sorted = " + strategy.isSorted(a));
+          /*
+        strategy = STRATEGIES[5];
+        strategy.sort(a);
+        strategy.print(a);
+        System.out.println("sorted = " + strategy.isSorted(a));
+        */
         /*
 
         for (int type = 0; type < NUM_SORT_TYPES; type++) {
