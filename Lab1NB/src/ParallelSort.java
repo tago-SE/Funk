@@ -11,7 +11,7 @@ public class ParallelSort extends SortStrategy {
     public static final ParallelSort instance = new ParallelSort();
     
     @Override
-    public long sort(float[] a) {
+    public long sort(float[] a, int cores, int threshold) {
         System.gc();
         long start = System.nanoTime();
         Arrays.parallelSort(a);

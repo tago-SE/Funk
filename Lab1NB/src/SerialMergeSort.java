@@ -47,7 +47,7 @@ public class SerialMergeSort extends SortStrategy {
     }
 
     @Override
-    public long sort(float[] a) {
+    public long sort(float[] a, int cores, int threshold) {
         System.gc();
         long start = System.nanoTime();
         mergesort(a, 0, a.length - 1);

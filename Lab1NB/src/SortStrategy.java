@@ -42,6 +42,10 @@ public class SortStrategy {
         throw new IllegalStateException("Abstract method");
     }
     
+    public int getTreshold() {
+        return 0;
+    }
+    
     public static void writeToFile(float[] a)  {
         try {
             FileOutputStream fos = new FileOutputStream(FILE_NAME);
@@ -90,7 +94,7 @@ public class SortStrategy {
         return true;
     }
     
-    public long sort(float[] a) {
+    public long sort(float[] a, int cores, int threshold) {
         throw new IllegalStateException("Not implemented.");
     }
 }

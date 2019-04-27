@@ -38,15 +38,19 @@ public class Lab1NB {
     private static void lab1_MergeSort_treshold() {
         SortStrategy[] s = {SerialMergeSort.instance, SerialArraySort.instance, ParallelMergeSort.instance};
         SortStrategy sorter = s[0];
-        System.out.println("Algo\tSize\tns\tms\tcores");
-        for (int size = 10; size <= 100000000; size *= 10) {
-            float[] a = sorter.randomArray(size, RANGE);
-            for (int cores = 1; cores < 9; cores *= 2) {
+        int tresh = 1000;
+        System.out.println("Algo\tSize\tns\tms\tcores\tthreshold");
+        for (int size = 1000; size <= 10000000; size *= 10) {
+            // Generates a randomized array of floats and saves it to a file
+            //SortStrategy.writeToFile(SortStrategy.randomArray(size, RANGE));
+            float[] a = SortStrategy.randomArray(size, RANGE);
+            for (int cores = 1; cores < 2; cores *= 2) {
                 sorter.setCores(cores);
                 for (int algo = 0; algo < 3; algo++) {
-                    long elapsed = sorter.sort(a.clone());
+                    long elapsed = sorter.sort(SortStrategy.randomArray(size, RANGE), cores, tresh);
                     System.out.println(algo + "\t" +  size + "\t" + elapsed + "\t" + 
-                            TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS) + "\t" + sorter.cores + "\t");
+                            TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS) + "\t" + sorter.cores + "\t" + tresh + "\t");
+                    
                 }
             }
         }

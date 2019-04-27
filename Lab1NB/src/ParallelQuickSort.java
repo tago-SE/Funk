@@ -24,19 +24,14 @@ public class ParallelQuickSort extends SortStrategy {
     public static final ParallelQuickSort instance = new ParallelQuickSort();
     
     @Override
-    public long sort(float[] a) {
+    public long sort(float[] a, int cores, int threshold) {
+        SortTask.threshold = threshold;
         System.gc();
         long start = System.nanoTime();
         RecursiveAction mainTask = new SortTask(a, 0, a.length - 1);
         ForkJoinPool pool = new ForkJoinPool(cores);
         pool.invoke(mainTask);
         return System.nanoTime() - start;
-    }
-    @Override
-    public void setThreshold(int t) {
-        if (t < 1) 
-            t = 1;
-        SortTask.threshold = t;
     }
    
     private static class SortTask extends RecursiveAction {

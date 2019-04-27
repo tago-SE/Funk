@@ -41,7 +41,7 @@ public class SerialQuickSort extends SortStrategy {
     }
     
     @Override
-    public long sort(float[] a) {
+    public long sort(float[] a, int cores, int threshold) {
         System.gc();
         long start = System.nanoTime();
         quicksort(a, 0, a.length - 1);

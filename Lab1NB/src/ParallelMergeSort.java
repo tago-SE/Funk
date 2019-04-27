@@ -9,34 +9,31 @@ public class ParallelMergeSort extends SortStrategy {
     
     public static final ParallelMergeSort instance = new ParallelMergeSort();
     
+           
+    
     @Override
-    public long sort(float[] a) {
+    public long sort(float[] a, int cores, int threshold) {
         System.gc();
         long start = System.nanoTime();
-        RecursiveAction mainTask = new SortTask(a, 0, a.length - 1);
+        RecursiveAction mainTask = new SortTask(a, 0, a.length - 1, threshold);
         ForkJoinPool pool = new ForkJoinPool(cores);
         pool.invoke(mainTask);
         return System.nanoTime() - start;
     }
     
-    @Override
-    public void setThreshold(int t) {
-        if (t < 1) 
-            t = 1;
-        SortTask.threshold = t;
-    }
+   
    
     private static class SortTask extends RecursiveAction {
  
-        private static int threshold = 8192;
-        
         private float[] a;
         private int left, right;
+        private int threshold;
         
-        SortTask(float[] a, int left, int right) {
+        SortTask(float[] a, int left, int right, int threshold) {
             this.a = a;
             this.left = left;
             this.right = right;
+            this.threshold = threshold;
         }
         
         public  void merge(int mid) {
@@ -73,8 +70,8 @@ public class ParallelMergeSort extends SortStrategy {
                 } else {
                     int mid = (left + right)/2;
                     invokeAll(
-                        new SortTask(a, left, mid), 
-                        new SortTask(a, mid + 1, right)
+                        new SortTask(a, left, mid, threshold), 
+                        new SortTask(a, mid + 1, right, threshold)
                     );
                     merge(mid);
                 }

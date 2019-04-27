@@ -11,7 +11,7 @@ public class SerialArraySort extends SortStrategy {
     public static final SerialArraySort instance = new SerialArraySort();
     
     @Override
-    public long sort(float[] a) {
+    public long sort(float[] a, int cores, int threshold) {
         System.gc();
         long start = System.nanoTime();
         Arrays.sort(a);
