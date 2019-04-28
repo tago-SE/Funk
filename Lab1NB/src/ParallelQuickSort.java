@@ -25,10 +25,9 @@ public class ParallelQuickSort extends SortStrategy {
     
     @Override
     public long sort(float[] a, int cores, int threshold) {
-        SortTask.threshold = threshold;
         System.gc();
         long start = System.nanoTime();
-        RecursiveAction mainTask = new SortTask(a, 0, a.length - 1);
+        RecursiveAction mainTask = new SortTask(a, 0, a.length - 1, threshold);
         ForkJoinPool pool = new ForkJoinPool(cores);
         pool.invoke(mainTask);
         return System.nanoTime() - start;
@@ -36,15 +35,16 @@ public class ParallelQuickSort extends SortStrategy {
    
     private static class SortTask extends RecursiveAction {
  
-        private static int threshold = 8192;
+        private int threshold;
         private float[] a;
         private int first, last;
         
         
-        public SortTask(float[] a, int first, int last) {
+        public SortTask(float[] a, int first, int last, int threshold) {
             this. a = a;
             this.first = first;
             this.last = last;
+            this.threshold = threshold;
         }
         
         private int partition() {
@@ -76,8 +76,8 @@ public class ParallelQuickSort extends SortStrategy {
                 } else {
                     int pivot = partition();
                     invokeAll(
-                           new SortTask(a, first, pivot - 1), 
-                           new SortTask(a, pivot + 1, last)
+                           new SortTask(a, first, pivot - 1, threshold), 
+                           new SortTask(a, pivot + 1, last, threshold)
                        );
                 }
             }

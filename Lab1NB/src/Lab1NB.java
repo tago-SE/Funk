@@ -38,19 +38,20 @@ public class Lab1NB {
     private static void lab1_MergeSort_treshold() {
         SortStrategy[] s = {SerialMergeSort.instance, SerialArraySort.instance, ParallelMergeSort.instance};
         SortStrategy sorter = s[0];
-        int tresh = 1000;
         System.out.println("Algo\tSize\tns\tms\tcores\tthreshold");
-        for (int size = 1000; size <= 10000000; size *= 10) {
+        for (int i = 3; i < 8; i++) {
+            int size = (int) Math.pow(10, i);
+            float[] a = SortStrategy.randomArray(size, RANGE);
+        for (int tresh = 2000; tresh <= 32000; tresh += 2000) {
             // Generates a randomized array of floats and saves it to a file
             //SortStrategy.writeToFile(SortStrategy.randomArray(size, RANGE));
-            float[] a = SortStrategy.randomArray(size, RANGE);
             for (int cores = 1; cores < 2; cores *= 2) {
-                sorter.setCores(cores);
-                for (int algo = 0; algo < 3; algo++) {
-                    long elapsed = sorter.sort(SortStrategy.randomArray(size, RANGE), cores, tresh);
-                    System.out.println(algo + "\t" +  size + "\t" + elapsed + "\t" + 
-                            TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS) + "\t" + sorter.cores + "\t" + tresh + "\t");
-                    
+                for (int algo = 2; algo < 3; algo++) {
+                   
+                        long elapsed = sorter.sort(a.clone(), cores, tresh);
+                        System.out.println(algo + "\tE" +  i + "\t" + elapsed + "\t" + 
+                                TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS) + "\t" + cores + "\t" + tresh + "\t");
+                    }
                 }
             }
         }

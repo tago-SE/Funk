@@ -12,9 +12,7 @@ import java.util.logging.Logger;
 
 
 public class SortStrategy {
-    
-    protected static int cores = 1;
-    
+
     private static final String FILE_NAME = "rdm_arr.txt";
     
     
@@ -29,23 +27,7 @@ public class SortStrategy {
         }
         return a;
     }
-    
-    public void setCores(int cores) {
-        this.cores = cores;
-    }
-    
-    public int getCores() {
-        return cores;
-    }
-    
-    public void setThreshold(int t) {
-        throw new IllegalStateException("Abstract method");
-    }
-    
-    public int getTreshold() {
-        return 0;
-    }
-    
+
     public static void writeToFile(float[] a)  {
         try {
             FileOutputStream fos = new FileOutputStream(FILE_NAME);
