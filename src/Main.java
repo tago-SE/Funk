@@ -59,9 +59,9 @@ public class Main {
                         int size = (int) Math.pow(10, i);
                         float[] a = SortStrategy.randomArray(size, RANGE);
                         System.out.println("size: 10E" + i);
-                        for (int cores = 1; cores <= 1; cores *= 2) {
+                        for (int cores = 4; cores <= 1; cores *= 2) {
                             System.out.println("Core: " + cores);
-                            for (int tresh = 2500; tresh <= 60000; tresh += 2500) {
+                            for (int tresh = 1000000; tresh <= 100000000; tresh += 10000000) {
                                 // Generates a randomized array of floats and saves it to a file
                                 //SortStrategy.writeToFile(SortStrategy.randomArray(size, RANGE));
                                 System.gc();
@@ -93,22 +93,22 @@ public class Main {
             File newTextFile = new File(path + filename);
             fw = new FileWriter(newTextFile);
             SortStrategy sorter = ParallelMergeSort.instance;
-            int size = (int) Math.pow(10, 8);
+            int e = 8;
+            int size = (int) Math.pow(10, e);
             float[] a = sorter.randomArray(size, RANGE);
-            fw.write("Parallel Mergesort - " + RANGE + "\n");
-            for (int cores = 2; cores <= 4; cores *= 2) {
-                for (int t = 10000000; t <= size; t += 5000000) {
+            for (int cores = 1; cores <= 4; cores *= 2) {
+                fw.write("Parallel Mergesort - " + RANGE + "\tcores: " + cores + "\n");
+                for (int t = size/100; t <= size; t += size/10  ) {
                     System.out.println("threshold: " + t + " cores: " + cores);
                     long elapsed = sorter.sort(a.clone(),  cores, t);
-                    System.out.println("elapsed = " + elapsed);
-                    fw.write("E" + 8 + "\t" + elapsed + "\t" +
-                            TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS) + "\t" + cores +"\t" + t + "\n");
+                    fw.write(
+                            TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS) + "\n");
                 }
             }
             sorter = SerialArraySort.instance;
             fw.write("ArraySort - " + RANGE + "\n");
-            long elapsed = sorter.sort(a.clone(), 8, 0);
-            fw.write("E" + 8 + "\t" + elapsed + "\t" +
+            long elapsed = sorter.sort(a.clone(), 1, 0);
+            fw.write("E" + e + "\t" + elapsed + "\t" +
                     TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS) + "\t" + 1 + "\t" + 0 + "\n");
         } catch (IOException e) {
             e.printStackTrace();
@@ -126,8 +126,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         parallelMergeSortVsArraySort();
-
-
         System.out.println("Done");
     }
 }

@@ -35,7 +35,7 @@ public class ParallelMergeSort extends SortStrategy {
         @Override
         protected void compute() {
             if (left < right) {
-                if (right - left < threshold) {
+                if ((right - left) < threshold) {
                     Arrays.sort(a, left, right + 1);
                 } else {
                     int mid = (left + right)/2;
