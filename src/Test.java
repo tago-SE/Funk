@@ -115,6 +115,8 @@ public class Test {
                     }
                     fw.write("\n");
                 }
+                fw.write("\n");
+                fw.write("\n");
             }
         } catch (Exception e) {
             //
@@ -134,22 +136,27 @@ public class Test {
             fw = new FileWriter(newTextFile);
             fw.write(s.getClass().getName() + "\n");
 
-            int factor = (end - start)/k;
-            thresholds.clear();
-            for (int t = start; t < end; t += factor) {
-                thresholds.add(t);
-            }
-            fw.write("size\t" + a.length + "\nthresh\t");
-            for (int cores = maxC; cores >= minC; cores /= 2) {
-                fw.write("C" + cores +"\t");
-            }
-            fw.write("\n");
-            for (Integer t : thresholds) {
-                fw.write(t + "\t");
-                for (int cores = maxC; cores >= minC; cores /= 2) {
-                    long elapsed = s.sort(a.clone(), cores, t);
-                    fw.write(TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS) + "\t");
+            for (int size = a.length; size >= minSize; size /= 10) {
+                a = SortStrategy.trunc(a, size);
+                System.out.println("size: " + a.length);
+                thresholds.clear();
+                for (int t = start; t < end; t += k) {
+                    thresholds.add(t);
                 }
+                fw.write("size\t" + a.length + "\nthresh\t");
+                for (int cores = maxC; cores >= minC; cores /= 2) {
+                    fw.write("C" + cores + "\t");
+                }
+                fw.write("\n");
+                for (Integer t : thresholds) {
+                    fw.write(t + "\t");
+                    for (int cores = maxC; cores >= minC; cores /= 2) {
+                        long elapsed = s.sort(a.clone(), cores, t);
+                        fw.write(TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS) + "\t");
+                    }
+                    fw.write("\n");
+                }
+                fw.write("\n");
                 fw.write("\n");
             }
 

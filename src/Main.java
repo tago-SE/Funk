@@ -54,16 +54,16 @@ public class Main {
         /*
             Hybrid
          */
-         Test.hybrid(path + "hybrid_qs.txt", a, ParallelQuickSort.instance, 2, 4, 10, minSize);
+         //Test.hybrid(path + "hybrid_qs.txt", a, ParallelQuickSort.instance, 2, 4, 10, minSize);
 
-       // Test.hybrid(path + "hybrid_ms.txt", a, ParallelMergeSort.instance, 2 4, 10, minSize);
+        // Test.hybrid(path + "hybrid_ms.txt", a, ParallelMergeSort.instance, 2 4, 10, minSize);
 
 
         /*
             Range
          */
-        //Test.range(path + "range_qs.txt", a, ParallelQuickSort.instance, 1, 4, 10, 100000, 20, minSize);
-       // Test.range(path + "range_ms.txt", a, ParallelMergeSort.instance, 1, 4, 10, 100000, 20, minSize);
+        //Test.range(path + "range_qs.txt", a, ParallelQuickSort.instance, 1, 4, 10, 100000, 5000, minSize);
+        Test.range(path + "range_ms.txt", a, ParallelMergeSort.instance, 1, 4, 10, 100000, 5000, minSize);
         /*
             Test All
          */
