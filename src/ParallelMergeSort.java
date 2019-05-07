@@ -14,7 +14,10 @@ public class ParallelMergeSort extends SortStrategy {
         System.gc();
         long start = System.nanoTime();
         RecursiveAction mainTask = new SortTask(a, 0, a.length - 1);
-        SortTask.threshold = threshold; //(a.length - 1 + cores)/cores;
+
+        SortTask.threshold = threshold;
+
+       //SortTask.threshold = threshold; //(a.length - 1 + cores)/cores;
         ForkJoinPool pool = new ForkJoinPool(cores);
         pool.invoke(mainTask);
         return System.nanoTime() - start;

@@ -95,7 +95,8 @@ public class Test {
                 fw.write("size\t" + size + "\nthresh\t");
                 for (int cores = maxC; cores >= minC; cores /= 2) {
                     fw.write("C" + cores +"\t");
-                    thresholds.add((size - 1 + cores)/cores);
+                    if (minC != 1)
+                        thresholds.add((size - 1 + cores)/cores);
                 }
                 fw.write("\n");
                 // Setup threshold
@@ -146,7 +147,6 @@ public class Test {
             for (Integer t : thresholds) {
                 fw.write(t + "\t");
                 for (int cores = maxC; cores >= minC; cores /= 2) {
-                    System.out.println("cores: " + cores);
                     long elapsed = s.sort(a.clone(), cores, t);
                     fw.write(TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS) + "\t");
                 }

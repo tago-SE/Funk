@@ -54,9 +54,9 @@ public class Main {
         /*
             Hybrid
          */
-        // Test.hybrid(path + "hybrid_qs.txt", a, ParallelQuickSort.instance, 1, 4, 10, minSize);
+         Test.hybrid(path + "hybrid_qs.txt", a, ParallelQuickSort.instance, 2, 4, 10, minSize);
 
-       Test.hybrid(path + "hybrid_ms.txt", a, ParallelMergeSort.instance, 2, 4, 10, 1000);
+       // Test.hybrid(path + "hybrid_ms.txt", a, ParallelMergeSort.instance, 2 4, 10, minSize);
 
 
         /*
@@ -67,7 +67,7 @@ public class Main {
         /*
             Test All
          */
-        //SortStrategy[] s = {SerialArraySort.instance, SerialQuickSort.instance, SerialMergeSort.instance, ParallelQuickSort.instance, ParallelMergeSort.instance, ParallelSort.instance};
+       // SortStrategy[] s = {SerialArraySort.instance, SerialQuickSort.instance, SerialMergeSort.instance, ParallelQuickSort.instance, ParallelMergeSort.instance, ParallelSort.instance};
         //Test.strategies(path + "comp.txt", a, s, 1, 4, minSize);
 
         System.out.println("Done");
