@@ -37,95 +37,39 @@ public class Main {
     
     private static String path = "C:/Users/tiago/Desktop/Funk/Lab2Data/";   // Change this
     private static String filename = "data.txt";
-    
-    private static void lab1_MergeSort_treshold()  {
-        FileWriter fw = null;
-        try {
-            File newTextFile = new File(path + filename);
-            fw = new FileWriter(newTextFile);
 
 
-            SortStrategy[] s = {SerialArraySort.instance, SerialMergeSort.instance, SerialArraySort.instance};
-            SortStrategy sorter = s[0];
-            fw.write("Algo\tSize\tns\tms\tcores\tthreshold\n");
-            for (int algo = 0; algo < s.length; algo++) {
-                sorter = s[algo];
-                System.out.println(sorter.getClass().getName());
-                fw.write(sorter.getClass().getName() + "\n");
-                for (int j = 0; j < 4; j++) {
-                    System.out.println("Run: " + j);
-                    fw.write("Run: " + j);
-                    for (int i = 5; i <= 8; i++) {
-                        int size = (int) Math.pow(10, i);
-                        float[] a = SortStrategy.randomArray(size, RANGE);
-                        System.out.println("size: 10E" + i);
-                        for (int cores = 4; cores <= 1; cores *= 2) {
-                            System.out.println("Core: " + cores);
-                            for (int tresh = 1000000; tresh <= 100000000; tresh += 10000000) {
-                                // Generates a randomized array of floats and saves it to a file
-                                //SortStrategy.writeToFile(SortStrategy.randomArray(size, RANGE));
-                                System.gc();
-                                float[] b = new float[a.length];
-                                System.arraycopy(a, 0, b, 0, a.length);
-                                long elapsed = sorter.sort(b, cores, tresh);
-                                fw.write(/*algo + */ "E" + i + "\t" + elapsed + "\t" +
-                                        TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS) + "\t" + cores + "\t" + tresh + "\n");
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (fw != null) { try {
-                    fw.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private static void parallelMergeSortVsArraySort()  {
-        FileWriter fw = null;
-        try {
-            File newTextFile = new File(path + filename);
-            fw = new FileWriter(newTextFile);
-            SortStrategy sorter = ParallelMergeSort.instance;
-            int e = 8;
-            int size = (int) Math.pow(10, e);
-            float[] a = sorter.randomArray(size, RANGE);
-            for (int cores = 1; cores <= 4; cores *= 2) {
-                fw.write("Parallel Mergesort - " + RANGE + "\tcores: " + cores + "\n");
-                for (int t = size/100; t <= size; t += size/10  ) {
-                    System.out.println("threshold: " + t + " cores: " + cores);
-                    long elapsed = sorter.sort(a.clone(),  cores, t);
-                    fw.write(
-                            TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS) + "\n");
-                }
-            }
-            sorter = SerialArraySort.instance;
-            fw.write("ArraySort - " + RANGE + "\n");
-            long elapsed = sorter.sort(a.clone(), 1, 0);
-            fw.write("E" + e + "\t" + elapsed + "\t" +
-                    TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS) + "\t" + 1 + "\t" + 0 + "\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (fw != null) {
-                try {
-                    fw.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-    
     public static void main(String[] args) throws IOException {
+        int e = 7;
+        int size = (int) Math.pow(10, e);
 
-        parallelMergeSortVsArraySort();
+        int minSize = 10000;
+
+        String file = path + filename;
+        float[] a;
+
+
+        a =  SortStrategy.randomArray(size, RANGE);
+
+        /*
+            Hybrid
+         */
+        // Test.hybrid(path + "hybrid_qs.txt", a, ParallelQuickSort.instance, 1, 4, 10, minSize);
+
+       Test.hybrid(path + "hybrid_ms.txt", a, ParallelMergeSort.instance, 2, 4, 10, 1000);
+
+
+        /*
+            Range
+         */
+        //Test.range(path + "range_qs.txt", a, ParallelQuickSort.instance, 1, 4, 10, 100000, 20, minSize);
+       // Test.range(path + "range_ms.txt", a, ParallelMergeSort.instance, 1, 4, 10, 100000, 20, minSize);
+        /*
+            Test All
+         */
+        //SortStrategy[] s = {SerialArraySort.instance, SerialQuickSort.instance, SerialMergeSort.instance, ParallelQuickSort.instance, ParallelMergeSort.instance, ParallelSort.instance};
+        //Test.strategies(path + "comp.txt", a, s, 1, 4, minSize);
+
         System.out.println("Done");
     }
 }

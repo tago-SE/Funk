@@ -27,7 +27,8 @@ public class ParallelQuickSort extends SortStrategy {
     public long sort(float[] a, int cores, int threshold) {
         System.gc();
         long start = System.nanoTime();
-        RecursiveAction mainTask = new SortTask(a, 0, a.length - 1, threshold);
+        RecursiveAction mainTask = new SortTask(a, 0, a.length - 1);
+        SortTask.threshold = threshold;
         ForkJoinPool pool = new ForkJoinPool(cores);
         pool.invoke(mainTask);
         return System.nanoTime() - start;
@@ -35,50 +36,41 @@ public class ParallelQuickSort extends SortStrategy {
    
     private static class SortTask extends RecursiveAction {
  
-        private int threshold;
+        private static int threshold;
         private float[] a;
         private int first, last;
         
         
-        public SortTask(float[] a, int first, int last, int threshold) {
+        public SortTask(float[] a, int first, int last) {
             this. a = a;
             this.first = first;
             this.last = last;
-            this.threshold = threshold;
         }
-        
-        private int partition() {
-            float pivot = a[first], temp;
-            int up = first;
-            int down = last;
-            do {
-                while (up < last && pivot >= a[up]) 
-                    up++;
-                while (pivot < a[down])             
-                    down--;
-                if (up < down) {
-                    temp = a[up];
-                    a[up] = a[down];
-                    a[down] = temp;
-                }
-            } while (up < down);
-            temp = a[first];
-            a[first] = a[down];
-            a[down] = temp;
-            return down;
-        }
-        
+
         @Override
         protected void compute() {
             if (first < last) {
-                if (last - first < threshold) {
+                if ((last - first) < threshold) {
                     Arrays.sort(a, first, last + 1);
                 } else {
-                    int pivot = partition();
+                    float pivot = a[last];
+                    int i = (first - 1); // index of smaller element
+                    for (int j = first; j<last; j++) {
+                        if (a[j] <= pivot) {
+                            i++;
+                            float temp = a[i];
+                            a[i] = a[j];
+                            a[j] = temp;
+                        }
+                    }
+                    float temp = a[i+1];
+                    a[i + 1] = a[last];
+                    a[last] = temp;
+                    int part = i + 1;
                     invokeAll(
-                           new SortTask(a, first, pivot - 1, threshold), 
-                           new SortTask(a, pivot + 1, last, threshold)
-                       );
+                            new SortTask(a, first, part - 1),
+                            new SortTask(a, part + 1, last)
+                    );
                 }
             }
         }

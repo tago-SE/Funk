@@ -12,8 +12,6 @@ import java.util.logging.Logger;
 
 
 public class SortStrategy {
-
-    private static final String FILE_NAME = "rdm_arr.txt";
     
     
     /**
@@ -27,16 +25,24 @@ public class SortStrategy {
         }
         return a;
     }
-    
-    public static float[] copyArray(float[] srcs) {
-        float[] copy = new float[srcs.length];
-        System.arraycopy(srcs, 0, copy, 0, srcs.length);
-        return copy;
+
+    public static float[] trunc(float[] a, int size) {
+        float[] b = new float[size];
+        System.arraycopy(a, 0, b, 0, size);
+        return b;
     }
 
-    public static void writeToFile(float[] a)  {
+    public static int getE(int size) {
+        int count = 0;
+        for (int i = size; i > 1; i /=10) {
+            count++;
+        }
+        return count;
+    }
+
+    public static void writeToFile(String filename, float[] a)  {
         try {
-            FileOutputStream fos = new FileOutputStream(FILE_NAME);
+            FileOutputStream fos = new FileOutputStream(filename);
             DataOutputStream dos = new DataOutputStream(fos);
             for (int i = 0; i < a.length; i++) {
                 dos.writeFloat(a[i]); 
@@ -49,11 +55,11 @@ public class SortStrategy {
         }
     }
     
-    public static float[] readFromFile(int size) {
+    public static float[] readFromFile(String filename, int size) {
         float[] a = new float[size];
         try {
-            FileInputStream fin = new FileInputStream(FILE_NAME);
-            DataInputStream din = new DataInputStream(fin);  
+            FileInputStream fin = new FileInputStream(filename);
+            DataInputStream din = new DataInputStream(fin);
             for (int i = 0; i < size; i++) {
                 a[i] = din.readFloat();
             }
@@ -65,8 +71,6 @@ public class SortStrategy {
         }
         return a;
     }
-    
-
     
     public void print(float[] a) {
         for (int i = 0; i < a.length; i++) {
