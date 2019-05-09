@@ -3,15 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="92e71520-a0ee-4adc-bf92-3e90dee6846a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Funk/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Funk/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Funk/ParallelMergeSort$SortTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Funk/ParallelMergeSort$SortTask.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Funk/ParallelMergeSort.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Funk/ParallelMergeSort.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Funk/ParallelQuickSort$SortTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Funk/ParallelQuickSort$SortTask.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Funk/ParallelQuickSort.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Funk/ParallelQuickSort.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Funk/SerialQuickSort.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Funk/SerialQuickSort.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Funk/SortStrategy.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Funk/SortStrategy.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ParallelMergeSort.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ParallelMergeSort.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Test.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -52,13 +44,13 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="4" />
-          <entry key="java" value="11103" />
+          <entry key="java" value="11125" />
           <entry key="txt" value="18" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="11103" />
+          <entry key="JAVA" value="11125" />
           <entry key="PLAIN_TEXT" value="22" />
         </counts>
       </usages-collector>
@@ -87,8 +79,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="636">
-              <caret line="73" column="10" lean-forward="true" selection-start-line="73" selection-start-column="10" selection-end-line="73" selection-end-column="10" />
+            <state relative-caret-position="767">
+              <caret line="80" column="1" lean-forward="true" selection-start-line="80" selection-start-column="1" selection-end-line="80" selection-end-column="1" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -99,8 +91,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Test.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="245">
-              <caret line="206" lean-forward="true" selection-start-line="206" selection-end-line="206" />
+            <state relative-caret-position="755">
+              <caret line="225" column="17" lean-forward="true" selection-start-line="225" selection-start-column="17" selection-end-line="225" selection-end-column="17" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -237,7 +229,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1557268709851" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1557431229340" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../server/1" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -294,7 +286,7 @@
       <workItem from="1556892735288" duration="9613000" />
       <workItem from="1557236267976" duration="21696000" />
       <workItem from="1557262115668" duration="5608000" />
-      <workItem from="1557430205814" duration="788000" />
+      <workItem from="1557430205814" duration="952000" />
     </task>
     <task id="LOCAL-00001" summary="Parallel Mergesort">
       <created>1556636321652</created>
@@ -324,11 +316,18 @@
       <option name="project" value="LOCAL" />
       <updated>1557261874357</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Parallel Mergesort">
+      <created>1557431068661</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1557431068661</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="79996000" />
+    <option name="totallyTimeSpent" value="80160000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -440,8 +439,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Test.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="245">
-          <caret line="206" lean-forward="true" selection-start-line="206" selection-end-line="206" />
+        <state relative-caret-position="755">
+          <caret line="225" column="17" lean-forward="true" selection-start-line="225" selection-start-column="17" selection-end-line="225" selection-end-column="17" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -450,8 +449,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="636">
-          <caret line="73" column="10" lean-forward="true" selection-start-line="73" selection-start-column="10" selection-end-line="73" selection-end-column="10" />
+        <state relative-caret-position="767">
+          <caret line="80" column="1" lean-forward="true" selection-start-line="80" selection-start-column="1" selection-end-line="80" selection-end-column="1" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

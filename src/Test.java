@@ -217,6 +217,7 @@ public class Test {
             fw.write("\n");
 
             for (int i = 1; i <= k; i++) {
+                System.out.println(i + "/" + k);
                 float[] a = SortStrategy.randomArray(size, range);
                 fw.write(i + "");
                 for (int cores = minC; cores <= maxC; cores++) {

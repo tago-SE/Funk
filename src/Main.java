@@ -74,8 +74,8 @@ public class Main {
         /*
             Test finalized version
          */
-        Test.single(path + "ms_final.txt", size, RANGE, ParallelMergeSort.instance, 1, 8, 20, 20000);
-        Test.single(path + "qs_final.txt", size, RANGE, ParallelQuickSort.instance, 1, 8, 20, 5000);
+        Test.single(path + "ms_final.txt", size, RANGE, ParallelMergeSort.instance, 1, 8, 25, 20000);
+        Test.single(path + "qs_final.txt", size, RANGE, ParallelQuickSort.instance, 1, 8, 25, 5000);
         System.out.println("Done");
     }
 }
