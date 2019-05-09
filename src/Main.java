@@ -40,7 +40,7 @@ public class Main {
 
 
     public static void main(String[] args) throws IOException {
-        int e = 7;
+        int e = 6;
         int size = (int) Math.pow(10, e);
 
         int minSize = 10000;
@@ -63,13 +63,19 @@ public class Main {
             Range
          */
         //Test.range(path + "range_qs.txt", a, ParallelQuickSort.instance, 1, 4, 10, 100000, 5000, minSize);
-        Test.range(path + "range_ms.txt", a, ParallelMergeSort.instance, 1, 4, 10, 100000, 5000, minSize);
+        //Test.range(path + "range_ms.txt", a, ParallelMergeSort.instance, 1, 4, 10, 100000, 5000, minSize);
         /*
             Test All
          */
        // SortStrategy[] s = {SerialArraySort.instance, SerialQuickSort.instance, SerialMergeSort.instance, ParallelQuickSort.instance, ParallelMergeSort.instance, ParallelSort.instance};
         //Test.strategies(path + "comp.txt", a, s, 1, 4, minSize);
 
+
+        /*
+            Test finalized version
+         */
+        Test.single(path + "ms_final.txt", size, RANGE, ParallelMergeSort.instance, 1, 8, 20, 20000);
+        Test.single(path + "qs_final.txt", size, RANGE, ParallelQuickSort.instance, 1, 8, 20, 5000);
         System.out.println("Done");
     }
 }

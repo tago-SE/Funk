@@ -35,6 +35,8 @@ public class ParallelMergeSort extends SortStrategy {
             this.right = right;
         }
 
+
+
         @Override
         protected void compute() {
             if (left < right) {

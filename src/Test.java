@@ -22,7 +22,7 @@ public class Test {
         fw.write("\n");
     }
 
-    public static void expTen(String filename, float[] a, SortStrategy s, int minC, int maxC, int minSize) {
+    public static void exp(String filename, float[] a, SortStrategy s, int minC, int maxC, int minSize) {
         FileWriter fw = null;
         try {
             File newTextFile = new File(filename);
@@ -194,6 +194,36 @@ public class Test {
                     }
                     fw.write("\n");
                 }
+            }
+        } catch (Exception e) {
+        } finally {
+            if (fw != null) try {
+                fw.close();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+        }
+    }
+
+    public static void single(String filename, int size, int range, SortStrategy s, int minC, int maxC, int k, int threshold) {
+        FileWriter fw = null;
+        try {
+            File newTextFile = new File(filename);
+            fw = new FileWriter(newTextFile);
+            fw.write(s.getClass().getName() + "\nk");
+            for (int c = minC; c <= maxC; c++) {
+                fw.write("\t" + c);
+            }
+            fw.write("\n");
+
+            for (int i = 1; i <= k; i++) {
+                float[] a = SortStrategy.randomArray(size, range);
+                fw.write(i + "");
+                for (int cores = minC; cores <= maxC; cores++) {
+                    long elapsed = s.sort(a.clone(), cores, threshold);
+                    fw.write("\t" + TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS));
+                }
+                fw.write("\n");
             }
         } catch (Exception e) {
         } finally {
