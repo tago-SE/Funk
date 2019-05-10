@@ -205,12 +205,56 @@ public class Test {
         }
     }
 
+    /*
+        This compares sorting of different sized arrays with a given range, core between certain threshold, k times.
+     */
+    public static void allSizes(String filename, int maxSize, int minSize, int range, SortStrategy s, int cores, int minT, int maxT, int k, int factor) {
+        FileWriter fw = null;
+        try {
+            File newTextFile = new File(filename);
+            fw = new FileWriter(newTextFile);
+            fw.write(s.getClass().getName() + " " + cores + "cores, different array sizes\n");
+            thresholds.clear();
+            for (int t = minT; t <= maxT + factor/2; t += factor) {
+                thresholds.add(t);
+            }
+            fw.write("threhsold\t");
+            for (int size = maxSize; size >= minSize; size /= 10) {
+                fw.write(size + "\t");
+            }
+            fw.write("\n");
+
+            for (int i = 1; i <= k; i++) {
+                System.out.println(i + "/" + k);
+                float[] a = SortStrategy.randomArray(maxSize, range);
+                for (int t : thresholds) {
+                    fw.write(t + "");
+                    for (int size = maxSize; size >= minSize; size /= 10) {
+                        long elapsed = s.sort(SortStrategy.trunc(a.clone(), size), cores, t);
+                        fw.write("\t" + /*TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS)*/ elapsed);
+                    }
+                    fw.write("\n");
+                }
+            }
+        } catch (Exception e) {
+        } finally {
+            if (fw != null) try {
+                fw.close();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+        }
+    }
+
+    /*
+        This is supposed to be run to compare a single array size for a given strategy with varying cores, k times.
+     */
     public static void single(String filename, int size, int range, SortStrategy s, int minC, int maxC, int k, int threshold) {
         FileWriter fw = null;
         try {
             File newTextFile = new File(filename);
             fw = new FileWriter(newTextFile);
-            fw.write(s.getClass().getName() + "\nk");
+            fw.write(s.getClass().getName() + "\tSize: " + size +"\nk");
             for (int c = minC; c <= maxC; c++) {
                 fw.write("\t" + c);
             }

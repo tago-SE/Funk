@@ -40,7 +40,7 @@ public class Main {
 
 
     public static void main(String[] args) throws IOException {
-        int e = 6;
+        int e = 7;
         int size = (int) Math.pow(10, e);
 
         int minSize = 10000;
@@ -74,8 +74,15 @@ public class Main {
         /*
             Test finalized version
          */
-        Test.single(path + "ms_final.txt", size, RANGE, ParallelMergeSort.instance, 1, 8, 25, 20000);
-        Test.single(path + "qs_final.txt", size, RANGE, ParallelQuickSort.instance, 1, 8, 25, 5000);
+        // Test.single(path + "ms_final.txt", size, RANGE, ParallelMergeSort.instance, 1, 8, 25, 20000);
+        // Test.single(path + "qs_final.txt", size, RANGE, ParallelQuickSort.instance, 1, 8, 25, 5000);
+
+        /*
+            Finding a reasonable threshold
+         */
+
+        Test.allSizes(path + "ms_resonable.txt", size, 100000, RANGE, ParallelMergeSort.instance, 8, 8, 60000, 8, 4000);
+        Test.allSizes(path + "qs_resonable.txt", size, 100000, RANGE, ParallelQuickSort.instance, 8, 8, 60000, 8, 4000);
         System.out.println("Done");
     }
 }
