@@ -9,6 +9,11 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 /**
+ * How to setup JavaFx, IntelliJ using Maven:
+ * https://openjfx.io/openjfx-docs/#install-javafx
+ */
+
+/**
  * JavaFX App
  */
 public class App extends Application {
