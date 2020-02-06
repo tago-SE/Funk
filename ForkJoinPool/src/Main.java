@@ -83,6 +83,6 @@ public class Main {
 
         Test.allSizes(path + "ms_resonable.txt", size, 100000, RANGE, ParallelMergeSort.instance, 8, 8, 60000, 8, 4000);
         Test.allSizes(path + "qs_resonable.txt", size, 100000, RANGE, ParallelQuickSort.instance, 8, 8, 60000, 8, 4000);
-        System.out.println("Done");
+
     }
 }
