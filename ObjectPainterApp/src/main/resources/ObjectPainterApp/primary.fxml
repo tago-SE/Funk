@@ -46,25 +46,7 @@
                         <Image url="@images/delete_black.png" />
                      </image>
                   </ImageView>
-                  <HBox fx:id="objectsBox" prefHeight="25.0" spacing="5.0">
-                     <children>
-                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@images/octagon.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@images/line.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@images/rhombus.png" />
-                           </image>
-                        </ImageView>
-                        <ToggleButton fx:id="circle" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onCircleSelection" prefHeight="25.0" prefWidth="25.0" />
-                     </children>
+                  <HBox fx:id="objectsBox" maxHeight="-Infinity" prefHeight="25.0" spacing="5.0">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>

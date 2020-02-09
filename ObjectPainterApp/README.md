@@ -1,3 +1,9 @@
+ ### Application 
+ The created application is a simple drawing program. The user can select predefined shapes (lines, ovals, polygons),
+ place them on the canvas. Using the menu it is possible to select individual objects to perform actions such as, changing 
+ the objects size, color, line width or filling. The selected object can also be deleted. The program can save and 
+ load previous drawings using Object-Serialization. 
+ 
 ### Requirements 
 
 * [Maven](https://maven.apache.org/)
@@ -14,10 +20,10 @@ This application was created with Maven
 4.  `mvn javafx:compile -f pom.xml` - May be necessary to compile changes to fxml resources. 
 5. `mvn javafx:run -f pom.xml` - Starts the application. 
 
+
+ ### Design Patterns
  
- ### Application 
- 
- The created application is a simple drawing program. The user can select predefined shapes (lines, ovals, polygons),
- place them on the canvas. Using the menu it is possible to select individual objects to perform actions such as, changing 
- the objects size, color, line width, filling, or filling. The selected object can also be deleted. The program can save and 
- load previos drawings using serialziation. 
+This section outlines the design patterns used in the application. 
+
+* [Subject-Subscriber](https://github.com/iluwatar/java-design-patterns/tree/master/observer) - Changes made on the placed objects are notifies the subscriber 
+
