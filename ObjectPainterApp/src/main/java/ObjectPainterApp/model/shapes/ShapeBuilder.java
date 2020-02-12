@@ -1,5 +1,7 @@
 package ObjectPainterApp.model.shapes;
 
+import ObjectPainterApp.model.ShapeCache;
+
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -31,6 +33,7 @@ public class ShapeBuilder {
 
     private String shapeName;
     private String color;
+    private boolean selected;
     private int lineWidth;
     private boolean fillShape;
     private double startX, startY, endX, endY;
@@ -90,6 +93,16 @@ public class ShapeBuilder {
         return this;
     }
 
+    public ShapeBuilder clearShapeName() {
+        this.shapeName = "";
+        return this;
+    }
+
+    public ShapeBuilder setSelected(boolean b) {
+        selected = true;
+        return this;
+    }
+
     /**
      * This will allocate a Shape instance with the specified properties.
      *
@@ -144,6 +157,23 @@ public class ShapeBuilder {
         return endY;
     }
 
+    public boolean isSelected() {
+        return selected;
+    }
 
-
+    @Override
+    public String toString() {
+        return "ShapeBuilder{" +
+                "shapeName='" + shapeName + '\'' +
+                ", color='" + color + '\'' +
+                ", selected=" + selected +
+                ", lineWidth=" + lineWidth +
+                ", fillShape=" + fillShape +
+                ", startX=" + startX +
+                ", startY=" + startY +
+                ", endX=" + endX +
+                ", endY=" + endY +
+                ", shapeCache=" + shapeCache +
+                '}';
+    }
 }

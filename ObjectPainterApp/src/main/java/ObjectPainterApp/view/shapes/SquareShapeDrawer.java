@@ -10,7 +10,6 @@ public class SquareShapeDrawer extends ShapeDrawer {
 
     @Override
     protected void drawShape(GraphicsContext gc) {
-        System.out.println(super.lineWidth);
         double w = Math.abs(super.startX - super.endX);
         double h = Math.abs(super.startY - super.endY);
         if (super.filled)

@@ -6,8 +6,5 @@ public class OvalShape extends Shape {
         super();  // required
     }
 
-    public OvalShape(ShapeBuilder builder) {
-        super(builder);
-    }
 
 }

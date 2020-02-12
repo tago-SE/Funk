@@ -1,48 +1,85 @@
 package ObjectPainterApp.model;
 
 import ObjectPainterApp.model.shapes.Shape;
+import ObjectPainterApp.model.shapes.ShapeBuilder;
+import ObjectPainterApp.model.shapes.SquareShape;
 import ObjectPainterApp.utils.IObserver;
 import ObjectPainterApp.utils.ISubject;
+import javafx.scene.canvas.Canvas;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class CanvasSubject implements ISubject {
 
-    List<Shape> shapes = new LinkedList<>();
-
+    private List<Shape> shapes = new ArrayList<>();
+    private List<Shape> selectedShapes = new ArrayList<>();
     private List<IObserver> observerList;
 
-    public void addShape(Shape shape) {
-        updateShape(shape);
+    public CanvasSubject() {
+
+    }
+
+    public List<Shape> selectIntersectionShapes(Shape otherShape) {
+        selectedShapes.clear();
+        for (Shape s : shapes) {
+            if (otherShape.intersects(s)) {
+                selectedShapes.add(s);
+                s.setSelected(true);
+            } else {
+                s.setSelected(false);
+            }
+        }
+        notifyObservers();
+        return selectedShapes;
+    }
+
+    public List<Shape> getSelectedShapes() {
+        return selectedShapes;
+    }
+
+    private boolean removeShapeNoAlert(Shape shape) {
+        if (shape.getId() == null || shape.getId().equals(""))
+            throw new IllegalStateException("Shape has no id.");
+        Iterator<Shape> itr = shapes.iterator();
+        while (itr.hasNext()) {
+            Shape s = itr.next();
+            if (s.getId().equals(shape.getId())) {
+                s.setSelected(false); // A removed shape can no longer be selected
+                itr.remove();
+                return true;
+            }
+        }
+        return false;
     }
 
     public void removeShape(Shape shape) {
-        if (shape.getId() == null || shape.getId().equals(""))
-            throw new IllegalStateException("Shape has no id.");
-        Iterator<Shape> itr = shapes.iterator();
-        while (itr.hasNext()) {
-            Shape s = itr.next();
-            if (s.getId().equals(shape.getId())) {
-                itr.remove();
-                notifyObservers();
-                return;
-            }
+        if (removeShapeNoAlert(shape)) {
+            notifyObservers();
         }
     }
 
-    public void updateShape(Shape shape) {
+    private void addOrUpdateShapeNoAlert(Shape shape) {
         if (shape.getId() == null || shape.getId().equals(""))
             throw new IllegalStateException("Shape has no id.");
-        Iterator<Shape> itr = shapes.iterator();
-        while (itr.hasNext()) {
-            Shape s = itr.next();
+        int index = 0;
+        boolean foundMatch = false;
+        for (Shape s : shapes) {
             if (s.getId().equals(shape.getId())) {
-                s = shape;
-                notifyObservers();
-                return;
+                foundMatch = true;
+                break;
             }
+            index++;
         }
-        shapes.add(shape);
+        if (foundMatch) {
+            shapes.set(index, shape);
+        } else {
+            shapes.add(shape);
+        }
+    }
+
+    public void addOrUpdateShape(Shape shape) {
+        addOrUpdateShapeNoAlert(shape);
         notifyObservers();
     }
 
@@ -50,6 +87,17 @@ public class CanvasSubject implements ISubject {
         shapes.clear();
         notifyObservers();
     }
+
+    public void addOrUpdateShapes(List<Shape> shapesToAdd) {
+        shapesToAdd.forEach(this::addOrUpdateShapeNoAlert);
+        notifyObservers();
+    }
+
+    public void removeShapes(List<Shape> shapesToRemove) {
+        shapesToRemove.forEach(this::removeShapeNoAlert);
+        notifyObservers();
+    }
+
 
     public Collection<Shape> getShapes() {
         return shapes;

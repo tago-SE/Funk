@@ -8,7 +8,4 @@ public class SquareShape extends Shape {
         super(); // required
     }
 
-    public SquareShape(ShapeBuilder builder) {
-        super(builder);
-    }
 }

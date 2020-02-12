@@ -1,14 +1,15 @@
 package ObjectPainterApp.model;
 
+import ObjectPainterApp.model.commands.AddShapeCommand;
+import ObjectPainterApp.model.commands.CommandManager;
+import ObjectPainterApp.model.commands.RemoveShapesCommand;
+import ObjectPainterApp.model.shapes.IShapeComponent;
 import ObjectPainterApp.model.shapes.Shape;
 import ObjectPainterApp.model.shapes.ShapeBuilder;
-import ObjectPainterApp.model.shapes.ShapeCache;
+import ObjectPainterApp.model.shapes.ShapeComposite;
 import ObjectPainterApp.utils.IObserver;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -18,20 +19,25 @@ public class AppFacade {
 
     private static final Logger LOGGER = Logger.getLogger(AppFacade.class.getName());
 
-    // Log Messages
-    private static final String SHAPE_DUMMY_CREATE_LOG = "Shape Dummy Created: (%f,%f)";
-    private static final String SHAPE_CREATE_LOG = "Shape Created: (%f,%f) to (%f,%f)";
-
-    private static final String SHAPE_NAME_NOT_FOUND_ERR = "Shape does not exist in model package: %s";
-
-    private static final String SHAPES_PACKAGE_LOCATION = "ObjectPainterApp.model.shapes";
-
     private static AppFacade instance = null;
 
-    private ShapeBuilder shapeBuilder = new ShapeBuilder(null, "0x000000ff", 2, false);
+
+    private ShapeBuilder shapeBuilder =
+            new ShapeBuilder(null, "0x000000ff", 2, false);
+
+    private ShapeBuilder selectionBuilder =
+            new ShapeBuilder("Square", "0x000000ff", 1, false).setSelected(true);
+
+    private CommandManager commandManager = new CommandManager();
 
     private Shape lastBuiltShape = null;
+    private boolean selectionEnabled = false;
+
     private CanvasSubject canvasSubject = new CanvasSubject();
+    private List<String> drawableShapeTypes = new ArrayList<>();
+    private List<String> drawableOperations = new ArrayList<>();
+
+
 
     public void subscribeToCanvas(IObserver o) {
         canvasSubject.addObserver(o);
@@ -42,17 +48,83 @@ public class AppFacade {
     }
 
     private AppFacade() {
-
+        loadDrawableShapeTypes();
+        loadDrawableOperations();
     }
 
     public static AppFacade getInstance() {
-        if (instance == null)
+        if (instance == null) {
             return instance = new AppFacade();
+        }
         return instance;
     }
 
-    public Collection<String> getShapeTypes() {
-        return ShapeCache.getInstance().getShapeTypes();
+    private void loadDrawableShapeTypes() {
+        for (Shape shape : ShapeCache.getInstance().getShapePrototypes()) {
+            //if (!(shape instanceof IShapeComponent))
+            drawableShapeTypes.add(shape.getName());
+        }
+    }
+
+    private void clearPreviousSelection() {
+        LOGGER.info("clear ");
+        shapeBuilder.clearShapeName();
+        selectionEnabled = false;
+    }
+
+    private void loadDrawableOperations() {
+        // In case the implementation becomes more complex this part could be changed
+        String[] operations = {"undo", "redo", "selection", "delete"};
+        drawableOperations = Arrays.asList(operations);
+    }
+
+    public Collection<String> getDrawableShapeTypes() {
+        return drawableShapeTypes;
+    }
+
+    public Collection<String> getDrawMenuOperations() {
+        return drawableOperations;
+    }
+
+    public void onOperationSelection(String operation) {
+        LOGGER.info("Operation: " + operation);
+        clearPreviousSelection();
+        if (operation.equals("selection")) {
+            selectionEnabled = true;
+        }
+        else if (operation.equals("delete")) {
+            commandManager.execute(new RemoveShapesCommand(canvasSubject.getSelectedShapes(), canvasSubject));
+        }
+        else if (operation.equals("undo")) {
+            commandManager.undo();
+        }
+        else if (operation.equals("redo")) {
+            commandManager.redo();
+        }
+    }
+
+    // TODO: Merge with onOperationSelection
+    public void onColorSelection(String color) {
+        LOGGER.info("Builder:color: " + color);
+        if (isSelectionEnabled()) {
+
+        }
+        shapeBuilder.setColor(color);
+        clearPreviousSelection();
+    }
+
+    // TODO: Merge with onOperationSelection
+    public void onLineWidthSelection(int lineWidth) {
+        LOGGER.info("Builder:lineWidth: " + lineWidth);
+        shapeBuilder.setLineWidth(lineWidth);
+        clearPreviousSelection();;
+    }
+
+    // TODO: Merge with onOperationSelection
+    public void onFillShapeSelection(boolean b) {
+        LOGGER.info("Builder:fill: " + b);
+        shapeBuilder.setFillShape(b);
+        clearPreviousSelection();
     }
 
     public void onShapeMenuOptionSelection(String shapeName) {
@@ -60,45 +132,47 @@ public class AppFacade {
         shapeBuilder.setShapeName(shapeName);
     }
 
-    public void onColorSelection(String color) {
-        LOGGER.info("Builder:color: " + color);
-        shapeBuilder.setColor(color);
-    }
-
-    public void onLineWidthSelection(int lineWidth) {
-        LOGGER.info("Builder:lineWidth: " + lineWidth);
-        shapeBuilder.setLineWidth(lineWidth);
-    }
-
-    public void onFillShapeSelection(boolean b) {
-        LOGGER.info("Builder:fill: " + b);
-        shapeBuilder.setFillShape(b);
+    private boolean isSelectionEnabled() {
+        return selectionEnabled;
     }
 
     public void onCanvasSelection(double x, double y) {
-        if (shapeBuilder.hasShape()) {
+        if (isSelectionEnabled()) {
+            LOGGER.info("selection box created");
+            selectionBuilder.setParam(x, y, x, y);
+            lastBuiltShape = selectionBuilder.build();
+            canvasSubject.addOrUpdateShape(lastBuiltShape);
+        }
+        else if (shapeBuilder.hasShape()) {
+            LOGGER.info("shape created");
             shapeBuilder.setParam(x, y, x, y);
             lastBuiltShape = shapeBuilder.build();
-            canvasSubject.addShape(lastBuiltShape);
+            canvasSubject.addOrUpdateShape(lastBuiltShape);
         }
     }
 
     public void onCanvasDrag(double x, double y) {
         if (lastBuiltShape != null) {
+            LOGGER.info("updating lastBuiltShape");
             lastBuiltShape.setEndX(x);
             lastBuiltShape.setEndY(y);
-            canvasSubject.updateShape(lastBuiltShape);
+            canvasSubject.addOrUpdateShape(lastBuiltShape);
         }
     }
 
-    public void onCanvasDragEnded(double x, double y) {
+    public void onCanvasDragEnded(double endX, double endY) {
         if (lastBuiltShape != null) {
-            lastBuiltShape.setEndX(x);
-            lastBuiltShape.setEndY(y);
-            canvasSubject.updateShape(lastBuiltShape);
+            LOGGER.info("updating lastBuiltShape");
+            lastBuiltShape.setEndX(endX);
+            lastBuiltShape.setEndY(endY);
+            if (isSelectionEnabled()) {
+                canvasSubject.removeShape(lastBuiltShape);
+                canvasSubject.selectIntersectionShapes(lastBuiltShape);
+            } else {
+                commandManager.execute(new AddShapeCommand(lastBuiltShape, canvasSubject));
+            }
             lastBuiltShape = null;
         }
-
     }
 
 }

@@ -1,5 +1,6 @@
-package ObjectPainterApp.model.shapes;
+package ObjectPainterApp.model;
 
+import ObjectPainterApp.model.shapes.Shape;
 import ObjectPainterApp.utils.SubtypeCache;
 
 import java.util.Collection;

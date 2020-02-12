@@ -1,6 +1,9 @@
 package ObjectPainterApp.model.shapes;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * An abstract class for representing drawable shapes. The creation patterns used are Build-Pattern and Prototype-Pattern.
  *
@@ -20,8 +23,9 @@ package ObjectPainterApp.model.shapes;
  * 2. https://github.com/iluwatar/java-design-patterns/tree/master/prototype
  * 3. https://www.tutorialspoint.com/design_pattern/prototype_pattern.htm
  */
-public abstract class Shape implements Cloneable {
-    
+public abstract class Shape implements Cloneable, IShapeComponent {
+
+    private boolean selected;
     private String id;
     private String color;
     private boolean filled;
@@ -44,6 +48,7 @@ public abstract class Shape implements Cloneable {
         this.startY = builder.getStartY();
         this.endX = builder.getEndX();
         this.endY = builder.getEndY();
+        this.selected = builder.isSelected();
         return this;
     }
 
@@ -56,6 +61,10 @@ public abstract class Shape implements Cloneable {
     final public Shape setId(String id) {
         this.id = id;
         return this;
+    }
+
+    public boolean intersects(Shape s) {
+        return !(this.startX > s.endX || this.endX < s.startX || this.startY > s.endY || this.endY < s.startY);
     }
 
     final public String getId() {
@@ -84,6 +93,7 @@ public abstract class Shape implements Cloneable {
 
     public void setLineWidth(int lineWidth) {
         this.lineWidth = lineWidth;
+
     }
 
     public double getStartX() {
@@ -118,6 +128,14 @@ public abstract class Shape implements Cloneable {
         this.endY = endY;
     }
 
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
     @Override
     public Shape clone() {
         try {
@@ -140,6 +158,7 @@ public abstract class Shape implements Cloneable {
                 ", startY=" + startY +
                 ", endX=" + endX +
                 ", endY=" + endY +
+                ", selected=" + selected +
                 '}';
     }
 }

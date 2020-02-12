@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
  */
 public abstract class ShapeDrawer implements Cloneable {
 
+    protected boolean selected;
     protected Color color;
     protected int lineWidth;
     protected boolean filled;
@@ -26,6 +27,7 @@ public abstract class ShapeDrawer implements Cloneable {
         endX = shape.getEndX();
         endY = shape.getEndY();
         filled = shape.isFilled();
+        selected = shape.isSelected();
         return this;
     }
 
@@ -39,6 +41,10 @@ public abstract class ShapeDrawer implements Cloneable {
         gc.setFill(color);
         gc.setStroke(color);
         gc.setLineWidth(lineWidth);
+        if (selected)
+            gc.setLineDashes(5);
+        else
+            gc.setLineDashes(0);
         drawShape(gc);
     }
 
@@ -66,6 +72,7 @@ public abstract class ShapeDrawer implements Cloneable {
                 ", startY=" + startY +
                 ", endX=" + endX +
                 ", endY=" + endY +
+                ", selected=" + selected +
                 '}';
     }
 

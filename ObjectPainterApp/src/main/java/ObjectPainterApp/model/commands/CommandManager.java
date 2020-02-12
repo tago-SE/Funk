@@ -2,6 +2,7 @@ package ObjectPainterApp.model.commands;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Manages the states of commands and history by saving commands in a stack. The CommandManager allows the execution of
@@ -13,12 +14,13 @@ import java.util.List;
  */
 public class CommandManager {
 
-
-    private List<ICommand> stackForward = new LinkedList<>();
-    private List<ICommand> stackReverse = new LinkedList<>();
+    private final Stack<ICommand> undoStack = new Stack<>();
+    private final Stack<ICommand> redoStack = new Stack<>();
 
     public void execute(ICommand command) {
-        command.execute();
+        command.doAction();
+        undoStack.push(command);
+        redoStack.clear();
     }
 
     public void execute(List<ICommand> commands) {
@@ -27,15 +29,20 @@ public class CommandManager {
     }
 
     public void undo() {
-
+        if (!undoStack.isEmpty())  {
+            redoStack.push(undoStack.pop().undoAction());
+        }
     }
 
     public void redo() {
-
+        if (!redoStack.isEmpty()) {
+            undoStack.push(redoStack.pop().doAction());
+        }
     }
 
     public void clear() {
-
+        undoStack.clear();
+        redoStack.clear();
     }
 
 }

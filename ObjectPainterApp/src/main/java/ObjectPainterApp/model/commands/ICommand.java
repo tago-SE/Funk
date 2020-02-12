@@ -5,18 +5,14 @@ public interface ICommand {
     /**
      * Called when the command needs to perform a required operation.
      */
-    void execute();
+    ICommand doAction();
 
     /**
      * Called when the command gets undone.
      */
-    void undo();
+    ICommand undoAction();
 
 
-    /**
-     * Will be used to
-     * @return
-     */
     String getName();
 
 }

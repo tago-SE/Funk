@@ -6,7 +6,4 @@ public class LineShape extends Shape {
         super();  // required
     }
 
-    public LineShape(ShapeBuilder builder) {
-        super(builder);
-    }
 }

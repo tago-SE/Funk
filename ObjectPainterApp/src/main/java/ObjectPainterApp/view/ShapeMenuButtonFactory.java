@@ -21,7 +21,6 @@ public class ShapeMenuButtonFactory {
     private static final String SHAPES_RESOURCE_DIRECTORY = "images/shapes";
     private static final String IMAGE_FORMAT = ".png";
     private static final String FAILED_TO_LOAD_RESOURCE_ERR = "Resource not found: %s.";
-    private static final int MENU_ITEM_SIZE = 25;
 
     private static ShapeMenuButtonFactory instance = null;
 
@@ -42,7 +41,7 @@ public class ShapeMenuButtonFactory {
      * @param shapeNames Collection of strings representing the available shapes.
      * @return List containing the ToggleIconButton class
      */
-    public List<ToggleButton> createShapeMenuButtons(Initializable initializable, Collection<String> shapeNames) {
+    public List<ToggleButton> createShapeMenuButtons(Initializable initializable, Collection<String> shapeNames, int size) {
         LOGGER.info("createShapeMenuButtons");
         List<ToggleButton> result = new ArrayList<>();
         for (String shapeName : shapeNames) {
@@ -57,7 +56,7 @@ public class ShapeMenuButtonFactory {
                     resource = "";
                 }
             }
-            result.add(createShapeMenuButton(resource, shapeName));
+            result.add(new IconToggleButton(resource, shapeName, size));
         }
         return result;
     }
@@ -72,23 +71,6 @@ public class ShapeMenuButtonFactory {
 
     private String getShapeIconResource(Initializable initializable, String shapeIconPath) {
         return initializable.getClass().getResource(shapeIconPath).toExternalForm();
-    }
-
-    private ToggleButton createShapeMenuButton(String resource, String shapeName) {
-        int size = MENU_ITEM_SIZE;
-        ToggleButton tb = new ToggleButton();
-        tb.setMaxHeight(size);
-        tb.setMaxWidth(size);
-        tb.setMinHeight(size);
-        tb.setMinWidth(size);
-        tb.setId(shapeName);
-        if (resource != null && !resource.equals("")) {
-            ImageView iv = new ImageView(resource);
-            iv.setFitWidth(size);
-            iv.setFitHeight(size);
-            tb.setGraphic(iv);
-        }
-        return tb;
     }
 
 }

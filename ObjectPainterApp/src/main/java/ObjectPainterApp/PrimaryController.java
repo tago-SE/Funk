@@ -10,6 +10,7 @@ import ObjectPainterApp.model.CanvasSubject;
 import ObjectPainterApp.model.shapes.Shape;
 import ObjectPainterApp.utils.ISubject;
 import ObjectPainterApp.utils.IObserver;
+import ObjectPainterApp.view.OperationMenuButtonFactory;
 import ObjectPainterApp.view.ShapeMenuButtonFactory;
 import ObjectPainterApp.view.shapes.ShapeDrawer;
 import ObjectPainterApp.view.shapes.ShapeDrawerFactory;
@@ -38,11 +39,16 @@ public class PrimaryController implements Initializable, IObserver {
     @FXML public ComboBox lineWidthSelectionList;
     @FXML public Canvas canvas;
     @FXML public HBox objectsBox;
+    @FXML public HBox menuBox;
 
     private AppFacade appFacade = AppFacade.getInstance();
 
+    private static final int BUTTON_SIZE = 25;
+
     private boolean canvasMouseDragStarted = false;
     private ShapeDrawerFactory shapeDrawerFactory = new ShapeDrawerFactory();
+
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -56,14 +62,27 @@ public class PrimaryController implements Initializable, IObserver {
         lineWidthSelectionList.getSelectionModel().select(0);
 
         Platform.runLater(() -> {
+            // Setup the operational buttons
+            List<ToggleButton> operationMenuButtons = new ArrayList<>();
+            for (String operation : appFacade.getDrawMenuOperations()) {
+                operationMenuButtons.add(OperationMenuButtonFactory.getInstance()
+                        .create(this, operation, BUTTON_SIZE));
+            }
+            for (ToggleButton button : operationMenuButtons) {
+                menuBox.getChildren().add(button);
+                button.setOnAction(e -> {
+                    appFacade.onOperationSelection(button.getId());
+                });
+            }
+
+            // Setup the shape buttons
             for (ToggleButton button : ShapeMenuButtonFactory.getInstance()
-                    .createShapeMenuButtons(this, appFacade.getShapeTypes())) {
+                    .createShapeMenuButtons(this, appFacade.getDrawableShapeTypes(), BUTTON_SIZE)) {
                 objectsBox.getChildren().add(button);
                 button.setOnAction(e -> {
                     appFacade.onShapeMenuOptionSelection(button.getId());
                 });
             }
-
         });
     }
 
@@ -89,44 +108,50 @@ public class PrimaryController implements Initializable, IObserver {
         appFacade.onLineWidthSelection(Integer.parseInt((String) lineWidthSelectionList.getValue()));
     }
 
-
     public void onCanvasMouseDrag(MouseEvent mouseEvent) {
+        double x = mouseEvent.getX();
+        double y = mouseEvent.getY();
         if (!canvasMouseDragStarted) {
-            System.out.println("Canvas Mouse Drag Started: " + mouseEvent.getX() + ", " + mouseEvent.getY());
+            System.out.println("Canvas Mouse Drag Started: " + x + ", " + y);
             canvasMouseDragStarted = true;
-        } else {
-            appFacade.onCanvasDrag(mouseEvent.getX(), mouseEvent.getY());
         }
+        appFacade.onCanvasDrag(x, y);
     }
 
     public void onCanvasMousePressed(MouseEvent mouseEvent) {
-        System.out.println("Canvas Mouse Pressed: " + mouseEvent.getX() + ", " + mouseEvent.getY());
-        appFacade.onCanvasSelection(mouseEvent.getX(), mouseEvent.getY());
+        double x = mouseEvent.getX();
+        double y = mouseEvent.getY();
+        appFacade.onCanvasSelection(x, y);
     }
 
     public void onCanvasMouseReleased(MouseEvent mouseEvent) {
         if (canvasMouseDragStarted) {
+            double x = mouseEvent.getX();
+            double y = mouseEvent.getY();
             System.out.println("Canvas Drag Ended: " + mouseEvent.getX() + ", " + mouseEvent.getY());
-            appFacade.onCanvasDragEnded(mouseEvent.getX(), mouseEvent.getY());
+            appFacade.onCanvasDragEnded(x, y);
         }
         canvasMouseDragStarted = false;
+    }
+
+    @Override
+    public void onChange(ISubject subject) {
+        if (subject instanceof CanvasSubject) {
+            renderCanvas(((CanvasSubject) subject).getShapes());
+        }
     }
 
     private void clearCanvas(GraphicsContext gc) {
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
     }
 
-    @Override
-    public void onChange(ISubject subject) {
-        if (subject instanceof CanvasSubject) {
-            clearCanvas(canvas.getGraphicsContext2D());
-            Collection<Shape> shapes = ((CanvasSubject) subject).getShapes();
-            for (Shape s : shapes) {
+    private void renderCanvas(Collection<Shape> shapes) {
+        clearCanvas(canvas.getGraphicsContext2D());
+        for (Shape s : shapes) {
+            System.out.println(s);
+            ShapeDrawer drawer = shapeDrawerFactory.createDrawer(s);
+            drawer.draw(canvas.getGraphicsContext2D());
 
-                ShapeDrawer drawer = shapeDrawerFactory.createDrawer(s);
-                System.out.println(drawer);
-                drawer.draw(canvas.getGraphicsContext2D());
-            }
         }
     }
 }

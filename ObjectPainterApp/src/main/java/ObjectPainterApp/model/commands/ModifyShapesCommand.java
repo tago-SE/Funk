@@ -4,20 +4,17 @@ import ObjectPainterApp.model.shapes.Shape;
 
 import java.util.List;
 
-public class DeleteShapesCommand implements ICommand {
+public class ModifyShapesCommand implements ICommand {
 
-    public DeleteShapesCommand(List<Shape> shapesToDelete) {
 
+    @Override
+    public ICommand doAction() {
+        return null;
     }
 
     @Override
-    public void execute() {
-
-    }
-
-    @Override
-    public void undo() {
-
+    public ICommand undoAction() {
+        return null;
     }
 
     @Override
