@@ -3,7 +3,7 @@ package ObjectPainterApp.model;
 import ObjectPainterApp.model.commands.AddShapeCommand;
 import ObjectPainterApp.model.commands.CommandManager;
 import ObjectPainterApp.model.commands.RemoveShapesCommand;
-import ObjectPainterApp.model.shapes.IShapeComponent;
+import ObjectPainterApp.model.shapes.IShapeComposite;
 import ObjectPainterApp.model.shapes.Shape;
 import ObjectPainterApp.model.shapes.ShapeBuilder;
 import ObjectPainterApp.model.shapes.ShapeComposite;
@@ -20,7 +20,6 @@ public class AppFacade {
     private static final Logger LOGGER = Logger.getLogger(AppFacade.class.getName());
 
     private static AppFacade instance = null;
-
 
     private ShapeBuilder shapeBuilder =
             new ShapeBuilder(null, "0x000000ff", 2, false);
@@ -61,7 +60,7 @@ public class AppFacade {
 
     private void loadDrawableShapeTypes() {
         for (Shape shape : ShapeCache.getInstance().getShapePrototypes()) {
-            //if (!(shape instanceof IShapeComponent))
+            if (!(shape instanceof IShapeComposite))
             drawableShapeTypes.add(shape.getName());
         }
     }

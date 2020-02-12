@@ -147,11 +147,6 @@ public class PrimaryController implements Initializable, IObserver {
 
     private void renderCanvas(Collection<Shape> shapes) {
         clearCanvas(canvas.getGraphicsContext2D());
-        for (Shape s : shapes) {
-            System.out.println(s);
-            ShapeDrawer drawer = shapeDrawerFactory.createDrawer(s);
-            drawer.draw(canvas.getGraphicsContext2D());
-
-        }
+        shapes.forEach(shape -> shape.draw(canvas.getGraphicsContext2D()));
     }
 }

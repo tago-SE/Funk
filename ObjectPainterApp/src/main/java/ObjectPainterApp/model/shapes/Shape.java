@@ -1,6 +1,9 @@
 package ObjectPainterApp.model.shapes;
 
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,19 +21,23 @@ import java.util.List;
  * original, but only change one or two attributes, it can be done using clone(), rather than having to use the factory
  * method.
  *
+ * Note that I've decided to break MVC here adding JavaFX implementation into the model. Adding a View class equivalent
+ * was seen as a bit too time consuming for the purposes of this programming lab.
+ *
+ *
  * Ref:
  * 1. https://github.com/iluwatar/java-design-patterns/tree/master/builder
  * 2. https://github.com/iluwatar/java-design-patterns/tree/master/prototype
  * 3. https://www.tutorialspoint.com/design_pattern/prototype_pattern.htm
  */
-public abstract class Shape implements Cloneable, IShapeComponent {
+public abstract class Shape implements Cloneable {
 
-    private boolean selected;
-    private String id;
-    private String color;
-    private boolean filled;
-    private int lineWidth;
-    private double startX, startY, endX, endY;
+    protected boolean selected;
+    protected String id;
+    protected String color;
+    protected boolean filled;
+    protected int lineWidth;
+    protected double startX, startY, endX, endY;
 
     public Shape() {
 
@@ -145,6 +152,22 @@ public abstract class Shape implements Cloneable, IShapeComponent {
             return null;
         }
     }
+
+    // Prevent override
+    final public void draw(GraphicsContext gc) {
+        gc.setFill(Color.web(color));
+        gc.setStroke(Color.web(color));
+        gc.setLineWidth(lineWidth);
+        if (selected)
+            gc.setLineDashes(5);
+        else
+            gc.setLineDashes(0);
+        drawShape(gc);
+    }
+
+    // Template method for rendering the shape
+    abstract protected  void drawShape(GraphicsContext gc);
+
 
     @Override
     public String toString() {
