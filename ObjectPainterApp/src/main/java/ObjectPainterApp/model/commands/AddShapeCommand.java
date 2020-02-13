@@ -20,6 +20,7 @@ public class AddShapeCommand implements ICommand {
     @Override
     public ICommand doAction() {
         canvas.addShape(shape);
+        canvas.clearSelection();
         canvas.notifyObservers();
         return this;
     }
@@ -27,6 +28,7 @@ public class AddShapeCommand implements ICommand {
     @Override
     public ICommand undoAction() {
         canvas.removeShape(shape);
+        canvas.clearSelection();
         canvas.notifyObservers();
         return this;
     }

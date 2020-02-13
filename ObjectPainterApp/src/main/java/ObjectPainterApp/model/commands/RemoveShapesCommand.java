@@ -18,7 +18,6 @@ public class RemoveShapesCommand implements ICommand {
     public RemoveShapesCommand(CanvasSubject canvas) {
         this.canvas = canvas;
         this.shapesToRemove = canvas.getSelectedShapes();
-        System.out.println(shapesToRemove.size());
     }
 
     @Override
@@ -37,10 +36,10 @@ public class RemoveShapesCommand implements ICommand {
     public ICommand undoAction() {
         int index = 0;
         for (Shape shape : shapesToRemove) {
-            shape.setMemento(mementos.get(index));
+            shape.setMemento(mementos.get(index++));
             canvas.addShape(shape);
-            index++;
         }
+        canvas.clearSelection();
         canvas.notifyObservers();
         return this;
     }

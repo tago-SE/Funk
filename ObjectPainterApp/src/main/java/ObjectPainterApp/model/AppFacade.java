@@ -1,8 +1,6 @@
 package ObjectPainterApp.model;
 
-import ObjectPainterApp.model.commands.AddShapeCommand;
-import ObjectPainterApp.model.commands.CommandManager;
-import ObjectPainterApp.model.commands.RemoveShapesCommand;
+import ObjectPainterApp.model.commands.*;
 import ObjectPainterApp.model.shapes.*;
 import ObjectPainterApp.utils.IObserver;
 
@@ -19,7 +17,6 @@ public class AppFacade {
     private static final Logger LOGGER = Logger.getLogger(AppFacade.class.getName());
 
     private static AppFacade instance = null;
-
     private ShapeBuilder shapeBuilder =
             new ShapeBuilder(null, SHAPE_COLOR, SHAPE_LINE_WIDTH, SHAPE_FILL);
 
@@ -83,41 +80,46 @@ public class AppFacade {
     public void onOperationSelection(String operation) {
         LOGGER.info("Operation: " + operation);
         clearPreviousSelection();
-        if (operation.equals("selection")) {
-            selectionEnabled = true;
-        }
-        else if (operation.equals("delete")) {
-            commandManager.execute(new RemoveShapesCommand(canvasSubject));
-        }
-        else if (operation.equals("undo")) {
-            commandManager.undo();
-        }
-        else if (operation.equals("redo")) {
-            commandManager.redo();
+        switch (operation) {
+            case "selection":
+                selectionEnabled = true;
+                break;
+            case "delete":
+                commandManager.execute(new RemoveShapesCommand(canvasSubject));
+                break;
+            case "undo":
+                commandManager.undo();
+                break;
+            case "redo":
+                commandManager.redo();
+                break;
         }
     }
 
     // TODO: Merge with onOperationSelection
     public void onColorSelection(String color) {
         LOGGER.info("Builder:color: " + color);
-        if (isSelectionEnabled()) {
-
+        if (canvasSubject.getSelectedShapes().size() > 0) {
+            commandManager.execute(new PaintShapesCommand(color, canvasSubject));
         }
         shapeBuilder.setColor(color);
-        clearPreviousSelection();
     }
 
     // TODO: Merge with onOperationSelection
     public void onLineWidthSelection(int lineWidth) {
         LOGGER.info("Builder:lineWidth: " + lineWidth);
+        if (canvasSubject.getSelectedShapes().size() > 0) {
+            commandManager.execute(new LineWidthShapesCommand(lineWidth, canvasSubject));
+        }
         shapeBuilder.setLineWidth(lineWidth);
-        clearPreviousSelection();;
     }
 
     // TODO: Merge with onOperationSelection
-    public void onFillShapeSelection(boolean b) {
-        LOGGER.info("Builder:fill: " + b);
-        shapeBuilder.setFillShape(b);
+    public void onFillShapeSelection(boolean fill) {
+        if (canvasSubject.getSelectedShapes().size() > 0) {
+            commandManager.execute(new FillShapesCommand(fill, canvasSubject));
+        }
+        shapeBuilder.setFillShape(fill);
         clearPreviousSelection();
     }
 

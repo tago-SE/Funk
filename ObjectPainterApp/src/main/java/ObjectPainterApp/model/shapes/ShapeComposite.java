@@ -123,7 +123,7 @@ public class ShapeComposite extends Shape implements IShapeComposite {
 
     @Override
     public boolean equals(Object o) {
-        return false;
+        return false; // Current implementation does not support equality.
     }
 
 }
