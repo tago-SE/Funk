@@ -7,7 +7,10 @@ import java.util.logging.Logger;
 
 import ObjectPainterApp.model.AppFacade;
 import ObjectPainterApp.model.CanvasSubject;
-import ObjectPainterApp.model.Settings;
+import ObjectPainterApp.model.IFileManager;
+import ObjectPainterApp.model.Config;
+import ObjectPainterApp.model.menus.MenuComponent;
+import ObjectPainterApp.model.menus.MenuFactory;
 import ObjectPainterApp.model.shapes.Shape;
 import ObjectPainterApp.utils.ISubject;
 import ObjectPainterApp.utils.IObserver;
@@ -21,15 +24,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
-public class PrimaryController implements Initializable, IObserver {
+
+public class PrimaryController implements Initializable, IObserver, IController {
 
     private static final Logger LOGGER = Logger.getLogger(PrimaryController.class.getName());
 
@@ -39,6 +40,7 @@ public class PrimaryController implements Initializable, IObserver {
     @FXML public Canvas canvas;
     @FXML public HBox objectsBox;
     @FXML public HBox menuBox;
+    @FXML public MenuBar menuBar;
 
     private AppFacade appFacade = AppFacade.getInstance();
 
@@ -48,7 +50,7 @@ public class PrimaryController implements Initializable, IObserver {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        appFacade.subscribeToCanvas(this);
+        appFacade.subscribeToServices(this);
 
         String[] widths = {"1", "2", "3", "4", "5", "6", "7"};
         List<String> list = new ArrayList(Arrays.asList(widths));
@@ -80,10 +82,35 @@ public class PrimaryController implements Initializable, IObserver {
             }
 
             // Load Settings
-            colorPicker.setValue(Color.web(Settings.SHAPE_COLOR));
+            colorPicker.setValue(Color.web(Config.SHAPE_COLOR));
 
-
+            setupMenuBar();
         });
+    }
+
+    private void setupMenuBar() {
+        menuBar.getMenus().clear();
+        MenuComponent fileMenu = MenuFactory.getInstance().getFileMenu();
+        Menu menuView = new Menu(" " +fileMenu.getName());
+        populateMenu(menuView, fileMenu);
+        menuBar.getMenus().add(menuView);
+    }
+
+    private void populateMenu(Menu rootViewMenu, MenuComponent rootMenu) {
+        for (MenuComponent child : rootMenu.getChildren()) {
+            if (child.getChildren().size() > 0) {
+                Menu subMenu = new Menu(child.getName());
+                rootViewMenu.getItems().add(subMenu);
+                populateMenu(subMenu, child);
+            } else {
+                MenuItem menuItem = new MenuItem(child.getName());
+                rootViewMenu.getItems().add(menuItem);
+                menuItem.setOnAction(actionEvent -> {
+                   child.onAction();
+                });
+
+            }
+        }
     }
 
     @FXML
@@ -131,6 +158,9 @@ public class PrimaryController implements Initializable, IObserver {
         if (subject instanceof CanvasSubject) {
             renderCanvas(((CanvasSubject) subject).getCurrentShapes());
         }
+        else if (subject instanceof IFileManager) {
+            setupMenuBar();
+        }
     }
 
     private void clearCanvas(GraphicsContext gc) {
@@ -141,4 +171,5 @@ public class PrimaryController implements Initializable, IObserver {
         clearCanvas(canvas.getGraphicsContext2D());
         shapes.forEach(shape -> shape.draw(canvas.getGraphicsContext2D()));
     }
+
 }

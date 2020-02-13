@@ -4,6 +4,8 @@ package ObjectPainterApp.model.shapes;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.io.Serializable;
+
 /**
  * An abstract class for representing drawable shapes. The creation patterns used are Build-Pattern and Prototype-Pattern.
  *
@@ -27,7 +29,7 @@ import javafx.scene.paint.Color;
  * 2. https://github.com/iluwatar/java-design-patterns/tree/master/prototype
  * 3. https://www.tutorialspoint.com/design_pattern/prototype_pattern.htm
  */
-public abstract class Shape implements Cloneable, IMemento {
+public abstract class Shape implements Cloneable, IMemento, Serializable {
 
     private String id;
     private String color;
@@ -186,6 +188,14 @@ public abstract class Shape implements Cloneable, IMemento {
 
     public void setLineDashes(int lineDashes) {
         this.lineDashes = lineDashes;
+    }
+
+    public double getCenterX() {
+        return Math.abs(startX - endX)/2 + getLeftX();
+    }
+
+    public double getCenterY() {
+        return Math.abs(startY - endY)/2 + getTopY();
     }
 
     @Override

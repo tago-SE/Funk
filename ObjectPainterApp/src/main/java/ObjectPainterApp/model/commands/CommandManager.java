@@ -46,6 +46,10 @@ public class CommandManager {
         }
     }
 
+    public int size() {
+        return undoStack.size() + redoStack.size();
+    }
+
     public void clear() {
         undoStack.clear();
         redoStack.clear();

@@ -19,8 +19,6 @@ public class CanvasSubject implements ISubject {
     private List<IObserver> observerList;
 
 
-
-
     public CanvasSubject() {
         reset();
     }
@@ -86,7 +84,8 @@ public class CanvasSubject implements ISubject {
     public void addObserver(IObserver observer) {
         if (observerList == null)
             observerList = new ArrayList<>();
-        else if (observerList.contains(observer))
+        observer.onChange(this); // alert of current state
+        if (observerList.contains(observer))
             return;
         observerList.add(observer);
     }

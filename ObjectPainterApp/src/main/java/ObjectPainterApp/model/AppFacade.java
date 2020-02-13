@@ -7,7 +7,7 @@ import ObjectPainterApp.utils.IObserver;
 import java.util.*;
 import java.util.logging.Logger;
 
-import static ObjectPainterApp.model.Settings.*;
+import static ObjectPainterApp.model.Config.*;
 
 /**
  * Singleton Application Facade Class
@@ -30,13 +30,11 @@ public class AppFacade {
     private List<String> drawableOperations = new ArrayList<>();
 
 
-    public void subscribeToCanvas(IObserver o) {
+    public void subscribeToServices(IObserver o) {
         canvasSubject.addObserver(o);
+        FileManagerSubject.getInstance().addObserver(o);
     }
 
-    public void unsubscribeToCanvas(IObserver o) {
-        canvasSubject.removeObserver(o);
-    }
 
     private AppFacade() {
         loadDrawableShapeTypes();
@@ -61,6 +59,14 @@ public class AppFacade {
         LOGGER.info("clear ");
         shapeBuilder.clearShapeName();
         selectionEnabled = false;
+    }
+
+    public int getNumberOfLoggedCommands() {
+        return commandManager.size();
+    }
+
+    public Collection<Shape> getCanvasShapes() {
+        return canvasSubject.getCurrentShapes();
     }
 
     private void loadDrawableOperations() {
@@ -172,4 +178,17 @@ public class AppFacade {
             lastBuiltShape = null;
         }
     }
+
+    public void loadCanvas(Collection<Shape> shapes) {
+        canvasSubject.clear();
+        commandManager.clear();
+        shapes.forEach(canvasSubject::addShape);
+        canvasSubject.notifyObservers();
+    }
+
+    public void newCanvas() {
+        canvasSubject.clear();
+        commandManager.clear();
+    }
+
 }
