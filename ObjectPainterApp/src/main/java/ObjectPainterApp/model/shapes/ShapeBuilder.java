@@ -33,8 +33,8 @@ public class ShapeBuilder {
 
     private String shapeName;
     private String color;
-    private boolean selected;
     private int lineWidth;
+    private int lineDashes;
     private boolean fillShape;
     private double startX, startY, endX, endY;
 
@@ -43,6 +43,8 @@ public class ShapeBuilder {
     private boolean shapeNameExists() {
         return hasShape() && shapeCache.getShapeTypes().contains(shapeName);
     }
+
+    public ShapeBuilder() {}
 
     public ShapeBuilder(String shapeName, String color, int lineWidth, boolean fillShape) {
         setColor(color);
@@ -83,6 +85,11 @@ public class ShapeBuilder {
         return this;
     }
 
+    public ShapeBuilder setLineDashes(int lineDashes) {
+        this.lineDashes = lineDashes;
+        return this;
+    }
+
     public ShapeBuilder setColor(String color) {
         this.color = color;
         return this;
@@ -95,11 +102,6 @@ public class ShapeBuilder {
 
     public ShapeBuilder clearShapeName() {
         this.shapeName = "";
-        return this;
-    }
-
-    public ShapeBuilder setSelected(boolean b) {
-        selected = true;
         return this;
     }
 
@@ -157,8 +159,8 @@ public class ShapeBuilder {
         return endY;
     }
 
-    public boolean isSelected() {
-        return selected;
+    public int getLineDashes() {
+        return lineDashes;
     }
 
     @Override
@@ -166,8 +168,8 @@ public class ShapeBuilder {
         return "ShapeBuilder{" +
                 "shapeName='" + shapeName + '\'' +
                 ", color='" + color + '\'' +
-                ", selected=" + selected +
                 ", lineWidth=" + lineWidth +
+                ", lineDashes=" + lineDashes +
                 ", fillShape=" + fillShape +
                 ", startX=" + startX +
                 ", startY=" + startY +

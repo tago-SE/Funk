@@ -6,6 +6,7 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * An abstract class for representing drawable shapes. The creation patterns used are Build-Pattern and Prototype-Pattern.
@@ -30,14 +31,24 @@ import java.util.List;
  * 2. https://github.com/iluwatar/java-design-patterns/tree/master/prototype
  * 3. https://www.tutorialspoint.com/design_pattern/prototype_pattern.htm
  */
-public abstract class Shape implements Cloneable {
+public abstract class Shape implements Cloneable, IShapeMemento {
 
-    protected boolean selected;
+    private static final Logger LOGGER = Logger.getLogger(Shape.class.getName());
+
     protected String id;
     protected String color;
     protected boolean filled;
     protected int lineWidth;
     protected double startX, startY, endX, endY;
+    protected int lineDashes;
+
+    private static class ShapeMemento implements IShapeMemento {
+        String color;
+        boolean filled;
+        int lineWidth;
+        double startX, startY, endX, endY;
+        int lineDashes;
+    }
 
     public Shape() {
 
@@ -47,15 +58,41 @@ public abstract class Shape implements Cloneable {
         rebuild(builder);
     }
 
+    public IShapeMemento getMemento() {
+        ShapeMemento state = new ShapeMemento();
+        state.color = this.getColor();
+        state.filled = this.isFilled();
+        state.lineWidth = this.getLineWidth();
+        state.startX = this.getStartX();
+        state.startY = this.getStartY();
+        state.endX = this.getEndX();
+        state.endY = this.getEndY();
+        state.lineDashes = this.getLineDashes();
+        return state;
+    }
+
+    public void setMemento(IShapeMemento memento) {
+        ShapeMemento state = (ShapeMemento) memento;
+        setColor(state.color);
+        setLineWidth(state.lineWidth);
+        setFilled(state.filled);
+        setStartX(state.startX);
+        setStartY(state.startY);
+        setEndX(state.endX);
+        setEndY(state.endY);
+        setLineDashes(state.lineDashes);
+    }
+
+
     public Shape rebuild(ShapeBuilder builder) {
         this.color = builder.getColor();
         this.filled = builder.isFillShape();
+        this.lineDashes = builder.getLineDashes();
         this.lineWidth = builder.getLineWidth();
         this.startX = builder.getStartX();
         this.startY = builder.getStartY();
         this.endX = builder.getEndX();
         this.endY = builder.getEndY();
-        this.selected = builder.isSelected();
         return this;
     }
 
@@ -135,12 +172,12 @@ public abstract class Shape implements Cloneable {
         this.endY = endY;
     }
 
-    public boolean isSelected() {
-        return selected;
+    public int getLineDashes() {
+        return lineDashes;
     }
 
-    public void setSelected(boolean selected) {
-        this.selected = selected;
+    public void setLineDashes(int lineDashes) {
+        this.lineDashes = lineDashes;
     }
 
     @Override
@@ -153,21 +190,21 @@ public abstract class Shape implements Cloneable {
         }
     }
 
-    // Prevent override
-    final public void draw(GraphicsContext gc) {
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  This section contains rendering for JavaFX, should probably be refactored if other rendering frameworks should be
+//  supported...
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public void draw(GraphicsContext gc) {
         gc.setFill(Color.web(color));
         gc.setStroke(Color.web(color));
         gc.setLineWidth(lineWidth);
-        if (selected)
-            gc.setLineDashes(5);
-        else
-            gc.setLineDashes(0);
+        gc.setLineDashes(lineDashes);
         drawShape(gc);
     }
 
     // Template method for rendering the shape
-    abstract protected  void drawShape(GraphicsContext gc);
-
+    abstract protected void drawShape(GraphicsContext gc);
 
     @Override
     public String toString() {
@@ -181,7 +218,7 @@ public abstract class Shape implements Cloneable {
                 ", startY=" + startY +
                 ", endX=" + endX +
                 ", endY=" + endY +
-                ", selected=" + selected +
                 '}';
     }
+
 }

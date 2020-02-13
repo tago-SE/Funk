@@ -3,16 +3,21 @@ package ObjectPainterApp.model.commands;
 public interface ICommand {
 
     /**
-     * Called when the command needs to perform a required operation.
+     *  Executes the command.
+     * @return Command instance
      */
     ICommand doAction();
 
     /**
-     * Called when the command gets undone.
+     * Performs the reverse of a do action.
+     * @return Command instance
      */
     ICommand undoAction();
 
-
+    /**
+     * Returns a string containing the command name, mainly for logging purposes.
+     * @return The command name
+     */
     String getName();
 
 }

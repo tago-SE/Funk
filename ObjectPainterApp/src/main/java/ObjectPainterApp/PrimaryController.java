@@ -7,13 +7,12 @@ import java.util.logging.Logger;
 
 import ObjectPainterApp.model.AppFacade;
 import ObjectPainterApp.model.CanvasSubject;
+import ObjectPainterApp.model.Settings;
 import ObjectPainterApp.model.shapes.Shape;
 import ObjectPainterApp.utils.ISubject;
 import ObjectPainterApp.utils.IObserver;
 import ObjectPainterApp.view.OperationMenuButtonFactory;
 import ObjectPainterApp.view.ShapeMenuButtonFactory;
-import ObjectPainterApp.view.shapes.ShapeDrawer;
-import ObjectPainterApp.view.shapes.ShapeDrawerFactory;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -44,11 +43,7 @@ public class PrimaryController implements Initializable, IObserver {
     private AppFacade appFacade = AppFacade.getInstance();
 
     private static final int BUTTON_SIZE = 25;
-
     private boolean canvasMouseDragStarted = false;
-    private ShapeDrawerFactory shapeDrawerFactory = new ShapeDrawerFactory();
-
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -83,6 +78,11 @@ public class PrimaryController implements Initializable, IObserver {
                     appFacade.onShapeMenuOptionSelection(button.getId());
                 });
             }
+
+            // Load Settings
+            colorPicker.setValue(Color.web(Settings.SHAPE_COLOR));
+
+
         });
     }
 
@@ -93,18 +93,14 @@ public class PrimaryController implements Initializable, IObserver {
 
     public void onColorSelection(ActionEvent actionEvent) {
         Color c = colorPicker.getValue();
-        System.out.println(c.toString());
-        System.out.println("New Color's RGB = "+c.getRed()+" "+c.getGreen()+" "+c.getBlue());
         appFacade.onColorSelection(c.toString());
     }
 
     public void onFillSelection(ActionEvent actionEvent) {
-        System.out.println("Fill: " + fill.isSelected());
         appFacade.onFillShapeSelection(fill.isSelected());
     }
 
     public void setLineWidth(ActionEvent actionEvent) {
-        System.out.println("Line width selection: " + lineWidthSelectionList.getValue());
         appFacade.onLineWidthSelection(Integer.parseInt((String) lineWidthSelectionList.getValue()));
     }
 
@@ -112,7 +108,6 @@ public class PrimaryController implements Initializable, IObserver {
         double x = mouseEvent.getX();
         double y = mouseEvent.getY();
         if (!canvasMouseDragStarted) {
-            System.out.println("Canvas Mouse Drag Started: " + x + ", " + y);
             canvasMouseDragStarted = true;
         }
         appFacade.onCanvasDrag(x, y);
@@ -126,10 +121,7 @@ public class PrimaryController implements Initializable, IObserver {
 
     public void onCanvasMouseReleased(MouseEvent mouseEvent) {
         if (canvasMouseDragStarted) {
-            double x = mouseEvent.getX();
-            double y = mouseEvent.getY();
-            System.out.println("Canvas Drag Ended: " + mouseEvent.getX() + ", " + mouseEvent.getY());
-            appFacade.onCanvasDragEnded(x, y);
+            appFacade.onCanvasDragEnded(mouseEvent.getX(), mouseEvent.getY());
         }
         canvasMouseDragStarted = false;
     }
@@ -137,7 +129,7 @@ public class PrimaryController implements Initializable, IObserver {
     @Override
     public void onChange(ISubject subject) {
         if (subject instanceof CanvasSubject) {
-            renderCanvas(((CanvasSubject) subject).getShapes());
+            renderCanvas(((CanvasSubject) subject).getCurrentShapes());
         }
     }
 

@@ -1,8 +1,6 @@
 package ObjectPainterApp.model;
 
-import ObjectPainterApp.model.shapes.Shape;
-import ObjectPainterApp.model.shapes.ShapeBuilder;
-import ObjectPainterApp.model.shapes.SquareShape;
+import ObjectPainterApp.model.shapes.*;
 import ObjectPainterApp.utils.IObserver;
 import ObjectPainterApp.utils.ISubject;
 import javafx.scene.canvas.Canvas;
@@ -12,95 +10,70 @@ import java.util.logging.Logger;
 
 public class CanvasSubject implements ISubject {
 
-    private List<Shape> shapes = new ArrayList<>();
-    private List<Shape> selectedShapes = new ArrayList<>();
+    private static final Logger LOGGER = Logger.getLogger(AppFacade.class.getName());
+
+    private ShapeComposite canvasShapes = new ShapeComposite();
+    private ShapeComposite selectedShapes = new ShapeComposite();
+    private ShapeComposite selectedMarker = new ShapeComposite();
+
     private List<IObserver> observerList;
 
+
+
+
     public CanvasSubject() {
-
+        reset();
     }
 
-    public List<Shape> selectIntersectionShapes(Shape otherShape) {
-        selectedShapes.clear();
-        for (Shape s : shapes) {
-            if (otherShape.intersects(s)) {
-                selectedShapes.add(s);
-                s.setSelected(true);
-            } else {
-                s.setSelected(false);
-            }
+    public void addShape(Shape shape) {
+        if (canvasShapes.getChildren().contains(shape)) {
+
+        } else {
+            canvasShapes.addChildren(shape);
         }
-        notifyObservers();
-        return selectedShapes;
-    }
-
-    public List<Shape> getSelectedShapes() {
-        return selectedShapes;
-    }
-
-    private boolean removeShapeNoAlert(Shape shape) {
-        if (shape.getId() == null || shape.getId().equals(""))
-            throw new IllegalStateException("Shape has no id.");
-        Iterator<Shape> itr = shapes.iterator();
-        while (itr.hasNext()) {
-            Shape s = itr.next();
-            if (s.getId().equals(shape.getId())) {
-                s.setSelected(false); // A removed shape can no longer be selected
-                itr.remove();
-                return true;
-            }
-        }
-        return false;
     }
 
     public void removeShape(Shape shape) {
-        if (removeShapeNoAlert(shape)) {
-            notifyObservers();
-        }
+        canvasShapes.removeChildren(shape);
     }
 
-    private void addOrUpdateShapeNoAlert(Shape shape) {
-        if (shape.getId() == null || shape.getId().equals(""))
-            throw new IllegalStateException("Shape has no id.");
-        int index = 0;
-        boolean foundMatch = false;
-        for (Shape s : shapes) {
-            if (s.getId().equals(shape.getId())) {
-                foundMatch = true;
-                break;
+    public void selectIntersectingShapes(Shape otherShape) {
+        selectedMarker.clear();
+        for (Shape s : canvasShapes.getChildren()) {
+            if (otherShape.intersects(s)) {
+                double x1 = s.getStartX() - 10;
+                double y1 = s.getStartY() - 10;
+                double x2 = s.getEndX() + 10;
+                double y2 = s.getEndY() + 10;
+                Shape marker = DragSelectionFactory.getInstance().getDragSelectionBox(x1, y1, x2, y2);
+                selectedMarker.addChildren(marker);
+                selectedShapes.addChildren(s);
             }
-            index++;
-        }
-        if (foundMatch) {
-            shapes.set(index, shape);
-        } else {
-            shapes.add(shape);
         }
     }
 
-    public void addOrUpdateShape(Shape shape) {
-        addOrUpdateShapeNoAlert(shape);
+    public void clearSelection() {
+        if (selectedShapes.getChildren().size() == 0)
+            return;
+        selectedMarker.clear();
+        selectedShapes.clear();
         notifyObservers();
+    }
+
+    private void reset() {
+        canvasShapes.clear();
+        canvasShapes.addChildren(selectedMarker);
+        clearSelection();
     }
 
     public void clear() {
-        shapes.clear();
+        reset();
         notifyObservers();
     }
 
-    public void addOrUpdateShapes(List<Shape> shapesToAdd) {
-        shapesToAdd.forEach(this::addOrUpdateShapeNoAlert);
-        notifyObservers();
-    }
-
-    public void removeShapes(List<Shape> shapesToRemove) {
-        shapesToRemove.forEach(this::removeShapeNoAlert);
-        notifyObservers();
-    }
-
-
-    public Collection<Shape> getShapes() {
-        return shapes;
+    public Collection<Shape> getCurrentShapes() {
+        // We protect the integrity of the list by creating a new one.
+        return new ArrayList<>(canvasShapes.getChildren());
     }
 
     @Override

@@ -3,14 +3,13 @@ package ObjectPainterApp.model;
 import ObjectPainterApp.model.commands.AddShapeCommand;
 import ObjectPainterApp.model.commands.CommandManager;
 import ObjectPainterApp.model.commands.RemoveShapesCommand;
-import ObjectPainterApp.model.shapes.IShapeComposite;
-import ObjectPainterApp.model.shapes.Shape;
-import ObjectPainterApp.model.shapes.ShapeBuilder;
-import ObjectPainterApp.model.shapes.ShapeComposite;
+import ObjectPainterApp.model.shapes.*;
 import ObjectPainterApp.utils.IObserver;
 
 import java.util.*;
 import java.util.logging.Logger;
+
+import static ObjectPainterApp.model.Settings.*;
 
 /**
  * Singleton Application Facade Class
@@ -22,10 +21,7 @@ public class AppFacade {
     private static AppFacade instance = null;
 
     private ShapeBuilder shapeBuilder =
-            new ShapeBuilder(null, "0x000000ff", 2, false);
-
-    private ShapeBuilder selectionBuilder =
-            new ShapeBuilder("Square", "0x000000ff", 1, false).setSelected(true);
+            new ShapeBuilder(null, SHAPE_COLOR, SHAPE_LINE_WIDTH, SHAPE_FILL);
 
     private CommandManager commandManager = new CommandManager();
 
@@ -35,7 +31,6 @@ public class AppFacade {
     private CanvasSubject canvasSubject = new CanvasSubject();
     private List<String> drawableShapeTypes = new ArrayList<>();
     private List<String> drawableOperations = new ArrayList<>();
-
 
 
     public void subscribeToCanvas(IObserver o) {
@@ -67,6 +62,7 @@ public class AppFacade {
 
     private void clearPreviousSelection() {
         LOGGER.info("clear ");
+        canvasSubject.clearSelection();
         shapeBuilder.clearShapeName();
         selectionEnabled = false;
     }
@@ -92,7 +88,7 @@ public class AppFacade {
             selectionEnabled = true;
         }
         else if (operation.equals("delete")) {
-            commandManager.execute(new RemoveShapesCommand(canvasSubject.getSelectedShapes(), canvasSubject));
+            commandManager.execute(new RemoveShapesCommand(canvasSubject));
         }
         else if (operation.equals("undo")) {
             commandManager.undo();
@@ -128,6 +124,7 @@ public class AppFacade {
 
     public void onShapeMenuOptionSelection(String shapeName) {
         LOGGER.info("Builder:shape: " + shapeName);
+        clearPreviousSelection();
         shapeBuilder.setShapeName(shapeName);
     }
 
@@ -138,15 +135,15 @@ public class AppFacade {
     public void onCanvasSelection(double x, double y) {
         if (isSelectionEnabled()) {
             LOGGER.info("selection box created");
-            selectionBuilder.setParam(x, y, x, y);
-            lastBuiltShape = selectionBuilder.build();
-            canvasSubject.addOrUpdateShape(lastBuiltShape);
+            lastBuiltShape = DragSelectionFactory.getInstance().getDragSelectionBox(x, y, x, y);
+            canvasSubject.addShape(lastBuiltShape);
+            canvasSubject.notifyObservers();
         }
         else if (shapeBuilder.hasShape()) {
             LOGGER.info("shape created");
-            shapeBuilder.setParam(x, y, x, y);
-            lastBuiltShape = shapeBuilder.build();
-            canvasSubject.addOrUpdateShape(lastBuiltShape);
+            lastBuiltShape = shapeBuilder.setParam(x, y, x, y).build();
+            canvasSubject.addShape(lastBuiltShape);
+            canvasSubject.notifyObservers();
         }
     }
 
@@ -155,7 +152,7 @@ public class AppFacade {
             LOGGER.info("updating lastBuiltShape");
             lastBuiltShape.setEndX(x);
             lastBuiltShape.setEndY(y);
-            canvasSubject.addOrUpdateShape(lastBuiltShape);
+            canvasSubject.notifyObservers();
         }
     }
 
@@ -166,12 +163,12 @@ public class AppFacade {
             lastBuiltShape.setEndY(endY);
             if (isSelectionEnabled()) {
                 canvasSubject.removeShape(lastBuiltShape);
-                canvasSubject.selectIntersectionShapes(lastBuiltShape);
+                canvasSubject.selectIntersectingShapes(lastBuiltShape);
+                canvasSubject.notifyObservers();
             } else {
                 commandManager.execute(new AddShapeCommand(lastBuiltShape, canvasSubject));
             }
             lastBuiltShape = null;
         }
     }
-
 }
