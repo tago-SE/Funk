@@ -47,59 +47,64 @@ public class ShapeComposite extends Shape implements IShapeComposite {
 
     @Override
     public double getStartX() {
-        double x = Integer.MAX_VALUE;
-        for (Shape child : children) {
-            startX = child.startX;
-            if (startX < x)
-                x = startX;
-            endX = child.endX;
-            if (endX < x)
-                x = endX;
-        }
-        return x;
-    }
-
-    @Override
-    public double getStartY() {
-        double y = Integer.MAX_VALUE;
-        for (Shape child : children) {
-            startY = child.startY;
-            if (startY < y)
-                y = startY;
-            endY = child.endY;
-            if (endY < y)
-                y = endY;
-        }
-        return y;
+        return getLeftX();
     }
 
     @Override
     public double getEndX() {
-        double x = Integer.MIN_VALUE;
+       return getRightX();
+    }
+
+    @Override
+    public double getStartY() {
+        return getTopY();
+    }
+
+    @Override
+    public double getEndY() {
+        return getBotY();
+    }
+
+    @Override
+    public double getLeftX() {
+        double x = Integer.MAX_VALUE;
         for (Shape child : children) {
-            endX = child.endX;
-            if (endX > x)
-                x = endX;
-            startX = child.startX;
-            if (startX > x)
-                x = startX;
+            x = Math.min(x, child.startX);
+            x = Math.min(x, child.endX);
         }
         return x;
     }
 
     @Override
-    public double getEndY() {
-        double y = Integer.MIN_VALUE;
+    public double getRightX() {
+        double x = Integer.MIN_VALUE;
         for (Shape child : children) {
-            endY = child.endY;
-            if (endY > y)
-                y = endY;
-            startY = child.startY;
-            if (startY > y)
-                y = startY;
+            x = Math.max(x, child.startX);
+            x = Math.max(x, child.endX);
+        }
+        return x;
+    }
+
+    @Override
+    public double getTopY() {
+        double y = Integer.MAX_VALUE;
+        for (Shape child : children) {
+            y = Math.min(y, child.startY);
+            y = Math.min(y, child.endY);
         }
         return y;
     }
+
+    @Override
+    public double getBotY() {
+        double y = Integer.MIN_VALUE;
+        for (Shape child : children) {
+            y = Math.max(y, child.startY);
+            y = Math.max(y, child.endY);
+        }
+        return y;
+    }
+
 
     public void draw(GraphicsContext gc) {
         children.forEach(child -> child.draw(gc));
@@ -107,16 +112,12 @@ public class ShapeComposite extends Shape implements IShapeComposite {
 
     @Override
     protected void drawShape(GraphicsContext gc) {
-        throw new IllegalStateException("This should never be called.");
+        throw new IllegalStateException("Should never be called.");
     }
 
+    @Override
     public IMemento getMemento() {
-        return null;  // Not implemented
-    }
-
-
-    public void setMemento(IMemento memento) {
-        // Not implemented
+        return null; // Does not support composite state memory
     }
 
     @Override

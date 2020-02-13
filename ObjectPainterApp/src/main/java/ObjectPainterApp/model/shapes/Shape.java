@@ -164,6 +164,22 @@ public abstract class Shape implements Cloneable, IMemento {
         this.endY = endY;
     }
 
+    public double getLeftX() {
+        return Math.min(startX, endX);
+    }
+
+    public double getRightX() {
+        return Math.max(startX, endX);
+    }
+
+    public double getTopY() {
+        return Math.min(startY, endY);
+    }
+
+    public double getBotY() {
+        return Math.max(startY, endY);
+    }
+
     public int getLineDashes() {
         return lineDashes;
     }
