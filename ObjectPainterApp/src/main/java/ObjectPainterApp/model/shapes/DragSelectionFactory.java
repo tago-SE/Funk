@@ -1,6 +1,9 @@
 package ObjectPainterApp.model.shapes;
 
-public class DragSelectionFactory implements IDragSelectionFactory {
+/**
+ * Factory class for creating drag selection markers of a given size
+ */
+public class DragSelectionFactory implements IShapeFactory {
 
     private static DragSelectionFactory instance;
     private Shape selectionBoxPrototype;

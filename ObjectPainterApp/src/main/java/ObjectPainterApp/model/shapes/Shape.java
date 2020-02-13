@@ -4,10 +4,6 @@ package ObjectPainterApp.model.shapes;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
 /**
  * An abstract class for representing drawable shapes. The creation patterns used are Build-Pattern and Prototype-Pattern.
  *
@@ -31,18 +27,16 @@ import java.util.logging.Logger;
  * 2. https://github.com/iluwatar/java-design-patterns/tree/master/prototype
  * 3. https://www.tutorialspoint.com/design_pattern/prototype_pattern.htm
  */
-public abstract class Shape implements Cloneable, IShapeMemento {
+public abstract class Shape implements Cloneable, IMemento {
 
-    private static final Logger LOGGER = Logger.getLogger(Shape.class.getName());
+    private String id;
+    private String color;
+    boolean filled;
+    private int lineWidth;
+    double startX, startY, endX, endY;
+    private int lineDashes;
 
-    protected String id;
-    protected String color;
-    protected boolean filled;
-    protected int lineWidth;
-    protected double startX, startY, endX, endY;
-    protected int lineDashes;
-
-    private static class ShapeMemento implements IShapeMemento {
+    private static class ShapeMemento implements IMemento {
         String color;
         boolean filled;
         int lineWidth;
@@ -58,7 +52,7 @@ public abstract class Shape implements Cloneable, IShapeMemento {
         rebuild(builder);
     }
 
-    public IShapeMemento getMemento() {
+    public IMemento getMemento() {
         ShapeMemento state = new ShapeMemento();
         state.color = this.getColor();
         state.filled = this.isFilled();
@@ -71,7 +65,7 @@ public abstract class Shape implements Cloneable, IShapeMemento {
         return state;
     }
 
-    public void setMemento(IShapeMemento memento) {
+    public void setMemento(IMemento memento) {
         ShapeMemento state = (ShapeMemento) memento;
         setColor(state.color);
         setLineWidth(state.lineWidth);
@@ -82,7 +76,6 @@ public abstract class Shape implements Cloneable, IShapeMemento {
         setEndY(state.endY);
         setLineDashes(state.lineDashes);
     }
-
 
     public Shape rebuild(ShapeBuilder builder) {
         this.color = builder.getColor();

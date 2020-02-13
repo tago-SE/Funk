@@ -18,8 +18,10 @@ public class CommandManager {
 
     public void execute(ICommand cmd) {
         cmd.doAction();
-        undoStack.push(cmd);
-        redoStack.clear();
+        if (cmd.hasUndo()) {
+            undoStack.push(cmd);
+            redoStack.clear();
+        }
         LOGGER.info(cmd.getName());
     }
 

@@ -20,4 +20,11 @@ public interface ICommand {
      */
     String getName();
 
+    /**
+     * For commands that do not implement undo/redo functionality.
+     *
+     * @return
+     */
+    boolean hasUndo();
+
 }

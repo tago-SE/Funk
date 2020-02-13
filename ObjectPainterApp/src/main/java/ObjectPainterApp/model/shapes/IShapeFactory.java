@@ -1,6 +1,6 @@
 package ObjectPainterApp.model.shapes;
 
-public interface IDragSelectionFactory {
+public interface IShapeFactory {
 
     /**
      * Restores a previously created default box type selection marker bound by the specified coordinates.

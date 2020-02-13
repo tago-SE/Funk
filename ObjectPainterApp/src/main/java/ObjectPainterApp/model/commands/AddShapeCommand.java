@@ -1,11 +1,7 @@
 package ObjectPainterApp.model.commands;
 
-import ObjectPainterApp.model.AppFacade;
 import ObjectPainterApp.model.CanvasSubject;
-import ObjectPainterApp.model.shapes.IShapeMemento;
 import ObjectPainterApp.model.shapes.Shape;
-
-import java.util.logging.Logger;
 
 public class AddShapeCommand implements ICommand {
 
@@ -36,6 +32,11 @@ public class AddShapeCommand implements ICommand {
     @Override
     public String getName() {
         return "AddShape";
+    }
+
+    @Override
+    public boolean hasUndo() {
+        return true;
     }
 
 }

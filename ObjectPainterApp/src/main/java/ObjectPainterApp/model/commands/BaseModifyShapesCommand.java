@@ -1,7 +1,7 @@
 package ObjectPainterApp.model.commands;
 
 import ObjectPainterApp.model.CanvasSubject;
-import ObjectPainterApp.model.shapes.IShapeMemento;
+import ObjectPainterApp.model.shapes.IMemento;
 import ObjectPainterApp.model.shapes.Shape;
 
 import java.util.ArrayList;
@@ -11,10 +11,10 @@ import java.util.List;
 public abstract class BaseModifyShapesCommand implements ICommand {
 
     protected final Collection<Shape> shapes;
-    protected final List<IShapeMemento> mementos = new ArrayList<>();
+    protected final List<IMemento> mementos = new ArrayList<>();
     protected final CanvasSubject canvas;
 
-    public BaseModifyShapesCommand(CanvasSubject canvas) {
+    BaseModifyShapesCommand(CanvasSubject canvas) {
         this.canvas = canvas;
         this.shapes = canvas.getSelectedShapes();
     }
@@ -22,10 +22,6 @@ public abstract class BaseModifyShapesCommand implements ICommand {
     @Override
     public abstract ICommand doAction();
 
-    /**
-     * Basic implementation to undo a changed property.
-     * @return The executing undo command
-     */
     @Override
     public ICommand undoAction() {
         int index = 0;
@@ -37,5 +33,10 @@ public abstract class BaseModifyShapesCommand implements ICommand {
 
     @Override
     abstract public String getName();
+
+    @Override
+    public boolean hasUndo() {
+        return true;
+    }
 
 }

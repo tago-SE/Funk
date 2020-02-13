@@ -1,19 +1,18 @@
 package ObjectPainterApp.model.commands;
 
 import ObjectPainterApp.model.CanvasSubject;
-import ObjectPainterApp.model.shapes.IShapeMemento;
+import ObjectPainterApp.model.shapes.IMemento;
 import ObjectPainterApp.model.shapes.Shape;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 public class RemoveShapesCommand implements ICommand {
 
     private final CanvasSubject canvas;
     private final Collection<Shape> shapesToRemove;
-    private final List<IShapeMemento> mementos = new ArrayList<>();
+    private final List<IMemento> mementos = new ArrayList<>();
 
     public RemoveShapesCommand(CanvasSubject canvas) {
         this.canvas = canvas;
@@ -47,5 +46,10 @@ public class RemoveShapesCommand implements ICommand {
     @Override
     public String getName() {
         return "removeShapes";
+    }
+
+    @Override
+    public boolean hasUndo() {
+        return true;
     }
 }

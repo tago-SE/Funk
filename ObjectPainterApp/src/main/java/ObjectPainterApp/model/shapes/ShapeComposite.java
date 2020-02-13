@@ -4,7 +4,6 @@ import javafx.scene.canvas.GraphicsContext;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 public class ShapeComposite extends Shape implements IShapeComposite {
@@ -111,13 +110,12 @@ public class ShapeComposite extends Shape implements IShapeComposite {
         throw new IllegalStateException("This should never be called.");
     }
 
-    @Override
-    public IShapeMemento getMemento() {
+    public IMemento getMemento() {
         return null;  // Not implemented
     }
 
-    @Override
-    public void setMemento(IShapeMemento memento) {
+
+    public void setMemento(IMemento memento) {
         // Not implemented
     }
 
