@@ -137,7 +137,6 @@ public abstract class Shape implements Cloneable, IShapeMemento {
 
     public void setLineWidth(int lineWidth) {
         this.lineWidth = lineWidth;
-
     }
 
     public double getStartX() {

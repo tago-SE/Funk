@@ -62,7 +62,6 @@ public class AppFacade {
 
     private void clearPreviousSelection() {
         LOGGER.info("clear ");
-        canvasSubject.clearSelection();
         shapeBuilder.clearShapeName();
         selectionEnabled = false;
     }

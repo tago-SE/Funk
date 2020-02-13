@@ -39,6 +39,7 @@ public class CanvasSubject implements ISubject {
 
     public void selectIntersectingShapes(Shape otherShape) {
         selectedMarker.clear();
+        selectedShapes.clear();
         for (Shape s : canvasShapes.getChildren()) {
             if (otherShape.intersects(s)) {
                 double x1 = s.getStartX() - 10;
@@ -57,7 +58,6 @@ public class CanvasSubject implements ISubject {
             return;
         selectedMarker.clear();
         selectedShapes.clear();
-        notifyObservers();
     }
 
     private void reset() {
@@ -69,6 +69,10 @@ public class CanvasSubject implements ISubject {
     public void clear() {
         reset();
         notifyObservers();
+    }
+
+    public Collection<Shape> getSelectedShapes() {
+        return new ArrayList<>(selectedShapes.getChildren());
     }
 
     public Collection<Shape> getCurrentShapes() {

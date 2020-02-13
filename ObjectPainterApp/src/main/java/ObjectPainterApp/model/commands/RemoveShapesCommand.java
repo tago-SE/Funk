@@ -17,15 +17,18 @@ public class RemoveShapesCommand implements ICommand {
 
     public RemoveShapesCommand(CanvasSubject canvas) {
         this.canvas = canvas;
-        this.shapesToRemove = canvas.getCurrentShapes();
+        this.shapesToRemove = canvas.getSelectedShapes();
+        System.out.println(shapesToRemove.size());
     }
 
     @Override
     public ICommand doAction() {
         shapesToRemove.forEach(shape -> {
+            System.out.println("removed: " + shape.getId());
             canvas.removeShape(shape);
             mementos.add(shape.getMemento());
         });
+        canvas.clearSelection();
         canvas.notifyObservers();
         return this;
     }
