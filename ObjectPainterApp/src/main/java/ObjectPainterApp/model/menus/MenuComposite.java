@@ -1,10 +1,8 @@
 package ObjectPainterApp.model.menus;
 
-import java.util.Collection;
+public class MenuComposite extends MenuComponent {
 
-public class LogicalMenu extends MenuComponent {
-
-    public LogicalMenu(String name) {
+    public MenuComposite(String name) {
         super(name);
     }
 

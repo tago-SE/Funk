@@ -8,11 +8,6 @@ public class OperationMenuButtonFactory {
 
     private static final Logger LOGGER = Logger.getLogger(OperationMenuButtonFactory.class.getName());
 
-    private static final String DELETE_OPERATION = "delete";
-    private static final String SELECT_OPERATION = "select";
-    private static final String UNDO_OPERATION = "undo";
-    private static final String REDO_OPERATION = "redo";
-
     private static final String IMAGE_FORMAT = ".png";
     private static final String SHAPES_RESOURCE_DIRECTORY = "images/";
     private static final String FAILED_TO_LOAD_RESOURCE_ERR = "Resource not found: %s.";

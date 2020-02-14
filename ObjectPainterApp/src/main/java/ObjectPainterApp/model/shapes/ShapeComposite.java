@@ -69,8 +69,8 @@ public class ShapeComposite extends Shape implements IShapeComposite {
     public double getLeftX() {
         double x = Integer.MAX_VALUE;
         for (Shape child : children) {
-            x = Math.min(x, child.startX);
-            x = Math.min(x, child.endX);
+            x = Math.min(x, child.getLeftX());
+            x = Math.min(x, child.getRightX());
         }
         return x;
     }
@@ -79,8 +79,8 @@ public class ShapeComposite extends Shape implements IShapeComposite {
     public double getRightX() {
         double x = Integer.MIN_VALUE;
         for (Shape child : children) {
-            x = Math.max(x, child.startX);
-            x = Math.max(x, child.endX);
+            x = Math.max(x, child.getLeftX());
+            x = Math.max(x, child.getRightX());
         }
         return x;
     }
@@ -89,8 +89,8 @@ public class ShapeComposite extends Shape implements IShapeComposite {
     public double getTopY() {
         double y = Integer.MAX_VALUE;
         for (Shape child : children) {
-            y = Math.min(y, child.startY);
-            y = Math.min(y, child.endY);
+            y = Math.min(y, child.getTopY());
+            y = Math.min(y, child.getBotY());
         }
         return y;
     }
@@ -99,8 +99,8 @@ public class ShapeComposite extends Shape implements IShapeComposite {
     public double getBotY() {
         double y = Integer.MIN_VALUE;
         for (Shape child : children) {
-            y = Math.max(y, child.startY);
-            y = Math.max(y, child.endY);
+            y = Math.max(y, child.getTopY());
+            y = Math.max(y, child.getBotY());
         }
         return y;
     }

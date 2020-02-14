@@ -3,7 +3,6 @@ package ObjectPainterApp.model;
 import ObjectPainterApp.model.shapes.*;
 import ObjectPainterApp.utils.IObserver;
 import ObjectPainterApp.utils.ISubject;
-import javafx.scene.canvas.Canvas;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -17,7 +16,6 @@ public class CanvasSubject implements ISubject {
     private ShapeComposite selectedMarker = new ShapeComposite();
 
     private List<IObserver> observerList;
-
 
     public CanvasSubject() {
         reset();
@@ -76,7 +74,6 @@ public class CanvasSubject implements ISubject {
     }
 
     public Collection<Shape> getCurrentShapes() {
-        // We protect the integrity of the list by creating a new one.
         return new ArrayList<>(canvasShapes.getChildren());
     }
 

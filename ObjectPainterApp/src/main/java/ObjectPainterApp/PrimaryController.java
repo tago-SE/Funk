@@ -29,6 +29,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
+import static ObjectPainterApp.model.Config.LINE_WIDTH_OPTIONS;
+
 
 public class PrimaryController implements Initializable, IObserver, IController {
 
@@ -51,9 +53,7 @@ public class PrimaryController implements Initializable, IObserver, IController 
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         appFacade.subscribeToServices(this);
-
-        String[] widths = {"1", "2", "3", "4", "5", "6", "7"};
-        List<String> list = new ArrayList(Arrays.asList(widths));
+        List<String> list = new ArrayList(Arrays.asList(LINE_WIDTH_OPTIONS));
         ObservableList<String> items = FXCollections.observableArrayList(list);
         lineWidthSelectionList.setItems(items);
         lineWidthSelectionList.getSelectionModel().select(0);
@@ -66,10 +66,10 @@ public class PrimaryController implements Initializable, IObserver, IController 
                         .create(this, operation, BUTTON_SIZE));
             }
             for (ToggleButton button : operationMenuButtons) {
-                menuBox.getChildren().add(button);
-                button.setOnAction(e -> {
-                    appFacade.onOperationSelection(button.getId());
-                });
+                    menuBox.getChildren().add(button);
+                    button.setOnAction(e -> {
+                        appFacade.onOperationSelection(button.getId());
+                    });
             }
 
             // Setup the shape buttons

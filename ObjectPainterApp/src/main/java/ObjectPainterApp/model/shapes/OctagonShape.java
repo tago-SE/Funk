@@ -12,8 +12,7 @@ public class OctagonShape extends Shape {
         super();  // required
     }
 
-    @Override
-    protected void drawShape(GraphicsContext gc) {
+    private void getVertices() {
         if (startX == endX && startY == endY)
             return;
         double w = Math.abs(super.startX - super.endX);
@@ -23,10 +22,53 @@ public class OctagonShape extends Shape {
             x[i] = getCenterX() + radius*Math.cos(2*Math.PI*i/sides);
             y[i] = getCenterY() + radius*Math.sin(2*Math.PI*i/sides);
         }
+    }
+
+    @Override
+    protected void drawShape(GraphicsContext gc) {
+        if (startX == endX && startY == endY)
+            return;
+        getVertices();
         if (super.filled)
             gc.fillPolygon(x, y, sides);
         else
             gc.strokePolygon(x, y, sides);
+    }
+
+    @Override
+    public double getLeftX() {
+        double n = Integer.MAX_VALUE;
+        for (int i = 0; i < sides; i++) {
+            n = Math.min(n, x[i]);
+        }
+        return n;
+    }
+
+    @Override
+    public double getRightX() {
+        double n = Integer.MIN_VALUE;
+        for (int i = 0; i < sides; i++) {
+            n = Math.max(n, x[i]);
+        }
+        return n;
+    }
+
+    @Override
+    public double getTopY() {
+        double n = Integer.MAX_VALUE;
+        for (int i = 0; i < sides; i++) {
+            n = Math.min(n, y[i]);
+        }
+        return n;
+    }
+
+    @Override
+    public double getBotY() {
+        double n = Integer.MIN_VALUE;
+        for (int i = 0; i < sides; i++) {
+            n = Math.max(n, y[i]);
+        }
+        return n;
     }
 
 }

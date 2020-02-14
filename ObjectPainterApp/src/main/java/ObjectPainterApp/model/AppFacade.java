@@ -17,6 +17,7 @@ public class AppFacade {
     private static final Logger LOGGER = Logger.getLogger(AppFacade.class.getName());
 
     private static AppFacade instance = null;
+
     private ShapeBuilder shapeBuilder =
             new ShapeBuilder(null, SHAPE_COLOR, SHAPE_LINE_WIDTH, SHAPE_FILL);
 
@@ -70,9 +71,7 @@ public class AppFacade {
     }
 
     private void loadDrawableOperations() {
-        // In case the implementation becomes more complex this part could be changed
-        String[] operations = {"undo", "redo", "selection", "delete"};
-        drawableOperations = Arrays.asList(operations);
+        drawableOperations = Operations.labels();
     }
 
     public Collection<String> getDrawableShapeTypes() {
@@ -85,18 +84,19 @@ public class AppFacade {
 
     public void onOperationSelection(String operation) {
         LOGGER.info("Operation: " + operation);
+        Operations o = Operations.labelOf(operation);
         clearPreviousSelection();
-        switch (operation) {
-            case "selection":
+        switch (o) {
+            case SELECTION:
                 selectionEnabled = true;
                 break;
-            case "delete":
+            case DELETE:
                 commandManager.execute(new RemoveShapesCommand(canvasSubject));
                 break;
-            case "undo":
+            case UNDO:
                 commandManager.undo();
                 break;
-            case "redo":
+            case REDO:
                 commandManager.redo();
                 break;
         }
@@ -149,6 +149,7 @@ public class AppFacade {
         else if (shapeBuilder.hasShape()) {
             LOGGER.info("shape created");
             lastBuiltShape = shapeBuilder.setParam(x, y, x, y).build();
+            canvasSubject.clearSelection();
             canvasSubject.addShape(lastBuiltShape);
             canvasSubject.notifyObservers();
         }

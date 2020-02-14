@@ -191,11 +191,13 @@ public abstract class Shape implements Cloneable, IMemento, Serializable {
     }
 
     public double getCenterX() {
-        return Math.abs(startX - endX)/2 + getLeftX();
+        // Don't use any of the above public methods internally
+        return Math.abs(startX - endX)/2 + Math.min(startX, endX);
     }
 
     public double getCenterY() {
-        return Math.abs(startY - endY)/2 + getTopY();
+        // Don't use any of the above public methods internally
+        return Math.abs(startY - endY)/2 +  Math.min(startY, endY);
     }
 
     @Override

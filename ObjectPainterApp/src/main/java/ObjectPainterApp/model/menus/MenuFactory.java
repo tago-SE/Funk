@@ -21,11 +21,11 @@ public class MenuFactory implements IMenuFactory {
     }
 
     public MenuComponent getFileMenu() {
-        LogicalMenu fileMenu = new LogicalMenu("File");
+        MenuComposite fileMenu = new MenuComposite("File");
         fileMenu.addChild(new NewCanvasMenuItem("New"));
         fileMenu.addChild(new SaveCanvasMenuItem("Save"));
-        MenuComponent loadMenu = new LogicalMenu("Load");
-        MenuComponent deleteMenu = new LogicalMenu("Delete");
+        MenuComponent loadMenu = new MenuComposite("Load");
+        MenuComponent deleteMenu = new MenuComposite("Delete");
         fileMenu.addChild(loadMenu);
         fileMenu.addChild(deleteMenu);
         FileManagerSubject.getInstance().getSavedShapeFiles().forEach(filename -> {
