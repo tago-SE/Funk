@@ -41,9 +41,11 @@ public class SaveCanvasMenuItem extends MenuComponent {
                 alert.setContentText("Are you ok with this?");
                 Optional<ButtonType> alertResult = alert.showAndWait();
                 if (alertResult.get() == ButtonType.OK){
+                    facade.clearSelection();
                     fileManager.saveShapesToFile(facade.getCanvasShapes(), filename);
                 }
             } else {
+                facade.clearSelection();
                 fileManager.saveShapesToFile(facade.getCanvasShapes(), filename);
             }
         });

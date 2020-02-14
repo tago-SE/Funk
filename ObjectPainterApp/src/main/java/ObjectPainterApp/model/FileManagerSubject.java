@@ -83,6 +83,7 @@ public class FileManagerSubject implements IFileManager {
         if (file.exists()) {
             System.out.println("File deleted: " + file.getName());
             file.delete();
+            notifyObservers();
         }
     }
 

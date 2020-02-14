@@ -180,6 +180,11 @@ public class AppFacade {
         }
     }
 
+    public void clearSelection() {
+        canvasSubject.clearSelection();
+        canvasSubject.notifyObservers();
+    }
+
     public void loadCanvas(Collection<Shape> shapes) {
         canvasSubject.clear();
         commandManager.clear();
