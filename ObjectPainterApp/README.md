@@ -25,5 +25,12 @@ This application was created with Maven
  
 This section outlines the design patterns used in the application. 
 
-* [Subject-Subscriber](https://github.com/iluwatar/java-design-patterns/tree/master/observer) - Changes made on the placed objects are notifies the subscriber 
+* [Subject-Subscriber](https://github.com/iluwatar/java-design-patterns/tree/master/observer) - Changes made to the canvas or the saved files are notified to the controller which updates the view. 
+* [Composite](https://github.com/iluwatar/java-design-patterns/tree/master/composite) - Selection are treated as a composite of shapes that can be manipulated as one to change color, get its size and so on.
+* [Command](https://github.com/iluwatar/java-design-patterns/tree/master/command) - Was implemented to allow do/undo.
+* [Template-method](https://github.com/iluwatar/java-design-patterns/tree/master/template-method) - The rendering of shapes was done throuh the template method. 
+* [Builder](https://github.com/iluwatar/java-design-patterns/tree/master/builder) - Was implemented because a shape could have a unlimited amount of properties, thus it made sense to move the configuration of these properties into a Builder class.  
+* [Prototype](https://github.com/iluwatar/java-design-patterns/tree/master/prototype) - Was added to allow the addition of new shapes, and allowing menus structures to be created at run time rather than at compile time.  
+* [Abstract factory](https://github.com/iluwatar/java-design-patterns/tree/master/abstract-factory) - This was only implemented in principle for the creation of a few menu components. 
+
 
