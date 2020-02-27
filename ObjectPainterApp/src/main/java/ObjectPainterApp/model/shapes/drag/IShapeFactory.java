@@ -1,4 +1,6 @@
-package ObjectPainterApp.model.shapes;
+package ObjectPainterApp.model.shapes.drag;
+
+import ObjectPainterApp.model.shapes.Shape;
 
 public interface IShapeFactory {
 

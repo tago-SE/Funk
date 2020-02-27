@@ -13,9 +13,9 @@ public class OvalShape extends Shape {
         double w = Math.abs(super.startX - super.endX);
         double h = Math.abs(super.startY - super.endY);
         if (super.filled)
-            gc.fillOval(super.startX, super.startY, w, h);
+            gc.fillOval(super.getCenterX() - w/2, super.getCenterY() - h/2, w, h);
         else
-            gc.strokeOval(super.startX, super.startY, w, h);
+            gc.strokeOval(super.getCenterX() - w/2, super.getCenterY() - h/2, w, h);
     }
 
 

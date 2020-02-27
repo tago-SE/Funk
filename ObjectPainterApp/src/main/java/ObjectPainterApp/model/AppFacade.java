@@ -2,6 +2,7 @@ package ObjectPainterApp.model;
 
 import ObjectPainterApp.model.commands.*;
 import ObjectPainterApp.model.shapes.*;
+import ObjectPainterApp.model.shapes.drag.DragSelectionFactory;
 import ObjectPainterApp.utils.IObserver;
 
 import java.util.*;

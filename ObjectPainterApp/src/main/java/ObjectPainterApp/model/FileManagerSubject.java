@@ -56,8 +56,9 @@ public class FileManagerSubject implements IFileManager {
             oos = new ObjectOutputStream(fos);
             oos.writeObject(shapes);
             LOGGER.info(String.format("Saved (%d): %s", shapes.size(), shapes));
-            //
-            // Alerts the observer that the fies managed have changed
+
+            // Alerts the observer that the files managed have changed
+
             notifyObservers();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -79,9 +80,7 @@ public class FileManagerSubject implements IFileManager {
     @Override
     public void deleteFile(String filename) {
         File file = new File(saveDirectoryPath + "/" + filename);
-        System.out.println(file);
         if (file.exists()) {
-            System.out.println("File deleted: " + file.getName());
             file.delete();
             notifyObservers();
         }

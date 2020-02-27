@@ -9,7 +9,7 @@ public enum Operations {
 
     public final String label;
 
-    private Operations(String label) {
+    Operations(String label) {
         this.label = label;
     }
 

@@ -15,9 +15,9 @@ public class SquareShape extends Shape {
         double w = Math.abs(super.startX - super.endX);
         double h = Math.abs(super.startY - super.endY);
         if (super.filled)
-            gc.fillRect(super.startX, super.startY, w, h);
+            gc.fillRect(super.getCenterX() - w/2, super.getCenterY() - h/2, w, h);
         else
-            gc.strokeRect(super.startX, super.startY, w, h);
+            gc.strokeRect(super.getCenterX() - w/2, super.getCenterY() - h/2, w, h);
     }
 
 }

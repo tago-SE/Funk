@@ -22,7 +22,6 @@ public class RemoveShapesCommand implements ICommand {
     @Override
     public ICommand doAction() {
         shapesToRemove.forEach(shape -> {
-            System.out.println("removed: " + shape.getId());
             canvas.removeShape(shape);
             mementos.add(shape.getMemento());
         });
@@ -45,7 +44,7 @@ public class RemoveShapesCommand implements ICommand {
 
     @Override
     public String getName() {
-        return "removeShapes";
+        return "RemoveShapes";
     }
 
     @Override

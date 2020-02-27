@@ -1,19 +1,14 @@
 package ObjectPainterApp;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
-import java.util.logging.Logger;
-
 import ObjectPainterApp.model.AppFacade;
 import ObjectPainterApp.model.CanvasSubject;
-import ObjectPainterApp.model.IFileManager;
 import ObjectPainterApp.model.Config;
+import ObjectPainterApp.model.IFileManager;
 import ObjectPainterApp.model.menus.MenuComponent;
 import ObjectPainterApp.model.menus.MenuFactory;
 import ObjectPainterApp.model.shapes.Shape;
-import ObjectPainterApp.utils.ISubject;
 import ObjectPainterApp.utils.IObserver;
+import ObjectPainterApp.utils.ISubject;
 import ObjectPainterApp.view.OperationMenuButtonFactory;
 import ObjectPainterApp.view.ShapeMenuButtonFactory;
 import javafx.application.Platform;
@@ -28,6 +23,11 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
+import java.util.logging.Logger;
 
 import static ObjectPainterApp.model.Config.LINE_WIDTH_OPTIONS;
 
@@ -88,10 +88,11 @@ public class PrimaryController implements Initializable, IObserver, IController 
         });
     }
 
+    // @TODO: Does recreating the file menu cause OnAction leaks?
     private void setupMenuBar() {
         menuBar.getMenus().clear();
         MenuComponent fileMenu = MenuFactory.getInstance().getFileMenu();
-        Menu menuView = new Menu(" " +fileMenu.getName());
+        Menu menuView = new Menu(" " + fileMenu.getName());
         populateMenu(menuView, fileMenu);
         menuBar.getMenus().add(menuView);
     }
@@ -115,6 +116,7 @@ public class PrimaryController implements Initializable, IObserver, IController 
 
     @FXML
     private void switchToSecondary() throws IOException {
+        // Simple test to see if the canvas state remains when we switch between views
         App.setRoot("secondary");
     }
 

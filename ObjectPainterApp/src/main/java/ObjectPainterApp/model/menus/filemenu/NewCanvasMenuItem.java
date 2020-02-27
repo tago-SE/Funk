@@ -16,16 +16,17 @@ public class NewCanvasMenuItem extends MenuComponent {
     @Override
     public void onAction() {
         AppFacade facade = AppFacade.getInstance();
-        if (facade.getNumberOfLoggedCommands() <= 0)
-            return;
-
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation Dialog");
-        alert.setHeaderText("A new canvas will be created, losing all previously done work.");
-        alert.setContentText("Are you ok with this?");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
-            AppFacade.getInstance().newCanvas();
+        if (facade.getNumberOfLoggedCommands() > 0) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation Dialog");
+            alert.setHeaderText("A new canvas will be created, losing all previously done work.");
+            alert.setContentText("Are you ok with this?");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK){
+                facade.newCanvas();
+            }
+        } else {
+            facade.newCanvas();
         }
     }
 

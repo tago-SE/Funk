@@ -6,10 +6,9 @@ public class MenuComposite extends MenuComponent {
         super(name);
     }
 
-
     @Override
     public void onAction() {
-        System.out.println("executed: " + getName());
+        throw new IllegalStateException("Not implemented");
     }
 
     @Override

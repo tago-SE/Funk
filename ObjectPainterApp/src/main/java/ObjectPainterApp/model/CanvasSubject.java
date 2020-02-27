@@ -1,6 +1,7 @@
 package ObjectPainterApp.model;
 
 import ObjectPainterApp.model.shapes.*;
+import ObjectPainterApp.model.shapes.drag.DragSelectionFactory;
 import ObjectPainterApp.utils.IObserver;
 import ObjectPainterApp.utils.ISubject;
 
