@@ -1,7 +1,7 @@
 package ObjectPainterApp.model.commands;
 
 import ObjectPainterApp.model.CanvasSubject;
-import ObjectPainterApp.model.shapes.IMemento;
+import ObjectPainterApp.model.shapes.IShapeMemento;
 import ObjectPainterApp.model.shapes.Shape;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.List;
 public abstract class BaseModifyShapesCommand implements ICommand {
 
     protected final Collection<Shape> shapes;
-    protected final List<IMemento> mementos = new ArrayList<>();
+    protected final List<IShapeMemento> mementos = new ArrayList<>();
     protected final CanvasSubject canvas;
 
     BaseModifyShapesCommand(CanvasSubject canvas) {

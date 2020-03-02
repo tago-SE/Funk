@@ -1,9 +1,7 @@
 package ObjectPainterApp.model.shapes;
 
-import ObjectPainterApp.model.ShapeCache;
-
-import java.util.UUID;
-import java.util.logging.Logger;
+import ObjectPainterApp.model.shapes.factory.DrawableShapeFactory;
+import ObjectPainterApp.model.shapes.factory.ShapeType;
 
 /**
  * A factory for creating new Shape objects with various properties. The current implementation uses a mix between
@@ -27,22 +25,12 @@ import java.util.logging.Logger;
  */
 public class ShapeBuilder {
 
-    private static final Logger LOGGER = Logger.getLogger(ShapeBuilder.class.getName());
+    // Current shape properties
+    private ShapeState state = new ShapeState();
 
-    private static final String NO_MATCHING_SHAPE_ERR = "Cannot find matching shape: %s.";
+    // Selected Shape Type
+    private ShapeType type;
 
-    private String shapeName;
-    private String color;
-    private int lineWidth;
-    private int lineDashes;
-    private boolean fillShape;
-    private double startX, startY, endX, endY;
-
-    private ShapeCache shapeCache = ShapeCache.getInstance();
-
-    private boolean shapeNameExists() {
-        return hasShape() && shapeCache.getShapeTypes().contains(shapeName);
-    }
 
     public ShapeBuilder() {}
 
@@ -50,18 +38,19 @@ public class ShapeBuilder {
         setColor(color);
         setLineWidth(lineWidth);
         setFillShape(fillShape);
-        setShapeName(shapeName);
+        if (shapeName != null)
+            setType(ShapeType.valueOf(shapeName.toUpperCase())); // hack override
     }
 
     public ShapeBuilder setStartXY(double x, double y) {
-        this.startX = x;
-        this.startY = y;
+        state.startX = x;
+        state.startY = y;
         return this;
     }
 
     public ShapeBuilder setEndXY(double x, double y) {
-        this.endX = x;
-        this.endY = y;
+        state.endX = x;
+        state.endY = y;
         return this;
     }
 
@@ -71,37 +60,33 @@ public class ShapeBuilder {
         return this;
     }
 
-    public ShapeBuilder setShapeName(String shapeName) {
-        this.shapeName = shapeName;
-        if (!shapeNameExists()) {
-            LOGGER.severe(String.format(NO_MATCHING_SHAPE_ERR, shapeName));
-            this.shapeName = "";
-        }
+    public ShapeBuilder setType(ShapeType type) {
+        this.type = type;
         return this;
     }
 
     public ShapeBuilder setLineWidth(int lineWidth) {
-        this.lineWidth = lineWidth;
+        state.lineWidth = lineWidth;
         return this;
     }
 
     public ShapeBuilder setLineDashes(int lineDashes) {
-        this.lineDashes = lineDashes;
+        state.lineDashes = lineDashes;
         return this;
     }
 
     public ShapeBuilder setColor(String color) {
-        this.color = color;
+        state.color = color;
         return this;
     }
 
     public ShapeBuilder setFillShape(boolean fillShape) {
-        this.fillShape = fillShape;
+        state.filled = fillShape;
         return this;
     }
 
     public ShapeBuilder clearShapeName() {
-        this.shapeName = "";
+        type = null;
         return this;
     }
 
@@ -111,71 +96,19 @@ public class ShapeBuilder {
      * @return Created Shape
      */
     public Shape build() {
-        if (color == null)
+        if (state.color == null)
             throw new IllegalStateException("Trying to build but no color was specified.");
-        if (shapeName == null || shapeName.equals(""))
+        if (type == null)
             throw new IllegalStateException("Trying to build but no shape was specified.");
-        if (!shapeNameExists()) {
-            throw new IllegalStateException("Trying to build a shape which does not exists.");
-        }
-        if (lineWidth <= 0) lineWidth = 1;
-        Shape prototype = shapeCache.getShape(shapeName);
-        return prototype.clone().rebuild(this).setId(UUID.randomUUID().toString());
+        if (state.lineWidth <= 0)
+            state.lineWidth = 1;
+        Shape prototype = DrawableShapeFactory.getInstance().getShapePrototype(type);
+        prototype.setMemento(state);
+        return prototype;
     }
 
     public boolean hasShape() {
-        return shapeName != null && !shapeName.equals("");
+        return type != null;
     }
 
-    public String getShapeName() {
-        return shapeName;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public int getLineWidth() {
-        return lineWidth;
-    }
-
-    public boolean isFillShape() {
-        return fillShape;
-    }
-
-    public double getStartX() {
-        return startX;
-    }
-
-    public double getStartY() {
-        return startY;
-    }
-
-    public double getEndX() {
-        return endX;
-    }
-
-    public double getEndY() {
-        return endY;
-    }
-
-    public int getLineDashes() {
-        return lineDashes;
-    }
-
-    @Override
-    public String toString() {
-        return "ShapeBuilder{" +
-                "shapeName='" + shapeName + '\'' +
-                ", color='" + color + '\'' +
-                ", lineWidth=" + lineWidth +
-                ", lineDashes=" + lineDashes +
-                ", fillShape=" + fillShape +
-                ", startX=" + startX +
-                ", startY=" + startY +
-                ", endX=" + endX +
-                ", endY=" + endY +
-                ", shapeCache=" + shapeCache +
-                '}';
-    }
 }

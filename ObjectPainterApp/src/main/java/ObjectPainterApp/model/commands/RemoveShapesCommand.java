@@ -1,7 +1,7 @@
 package ObjectPainterApp.model.commands;
 
 import ObjectPainterApp.model.CanvasSubject;
-import ObjectPainterApp.model.shapes.IMemento;
+import ObjectPainterApp.model.shapes.IShapeMemento;
 import ObjectPainterApp.model.shapes.Shape;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ public class RemoveShapesCommand implements ICommand {
 
     private final CanvasSubject canvas;
     private final Collection<Shape> shapesToRemove;
-    private final List<IMemento> mementos = new ArrayList<>();
+    private final List<IShapeMemento> mementos = new ArrayList<>();
 
     public RemoveShapesCommand(CanvasSubject canvas) {
         this.canvas = canvas;

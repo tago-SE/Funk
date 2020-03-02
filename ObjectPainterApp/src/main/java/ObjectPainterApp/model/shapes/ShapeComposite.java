@@ -1,5 +1,6 @@
 package ObjectPainterApp.model.shapes;
 
+import ObjectPainterApp.model.shapes.factory.ShapeType;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.ArrayList;
@@ -105,7 +106,6 @@ public class ShapeComposite extends Shape implements IShapeComposite {
         return y;
     }
 
-
     public void draw(GraphicsContext gc) {
         children.forEach(child -> child.draw(gc));
     }
@@ -116,8 +116,13 @@ public class ShapeComposite extends Shape implements IShapeComposite {
     }
 
     @Override
-    public IMemento getMemento() {
-        return null; // Does not support composite state memory
+    public ShapeType getType() {
+        throw new IllegalArgumentException("Composite does not have a type yet");
+    }
+
+    @Override
+    public IShapeMemento getMemento() {
+        throw new IllegalArgumentException("Composite does not have a memento");
     }
 
     @Override

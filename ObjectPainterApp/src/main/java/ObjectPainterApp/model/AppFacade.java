@@ -1,11 +1,16 @@
 package ObjectPainterApp.model;
 
 import ObjectPainterApp.model.commands.*;
-import ObjectPainterApp.model.shapes.*;
+import ObjectPainterApp.model.shapes.Shape;
+import ObjectPainterApp.model.shapes.ShapeBuilder;
 import ObjectPainterApp.model.shapes.drag.DragSelectionFactory;
+import ObjectPainterApp.model.shapes.factory.DrawableShapeFactory;
+import ObjectPainterApp.model.shapes.factory.ShapeType;
 import ObjectPainterApp.utils.IObserver;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static ObjectPainterApp.model.Config.*;
@@ -19,6 +24,7 @@ public class AppFacade {
 
     private static AppFacade instance = null;
 
+
     private ShapeBuilder shapeBuilder =
             new ShapeBuilder(null, SHAPE_COLOR, SHAPE_LINE_WIDTH, SHAPE_FILL);
 
@@ -28,7 +34,9 @@ public class AppFacade {
     private boolean selectionEnabled = false;
 
     private CanvasSubject canvasSubject = new CanvasSubject();
-    private List<String> drawableShapeTypes = new ArrayList<>();
+
+    private List<ShapeType> drawableShapeTypes =  DrawableShapeFactory.getInstance().types();
+
     private List<String> drawableOperations = new ArrayList<>();
 
 
@@ -37,9 +45,7 @@ public class AppFacade {
         FileManagerSubject.getInstance().addObserver(o);
     }
 
-
     private AppFacade() {
-        loadDrawableShapeTypes();
         loadDrawableOperations();
     }
 
@@ -48,13 +54,6 @@ public class AppFacade {
             return instance = new AppFacade();
         }
         return instance;
-    }
-
-    private void loadDrawableShapeTypes() {
-        for (Shape shape : ShapeCache.getInstance().getShapePrototypes()) {
-            if (!(shape instanceof IShapeComposite))
-            drawableShapeTypes.add(shape.getName());
-        }
     }
 
     private void clearPreviousSelection() {
@@ -72,10 +71,10 @@ public class AppFacade {
     }
 
     private void loadDrawableOperations() {
-        drawableOperations = Operations.labels();
+        drawableOperations = Operation.labels();
     }
 
-    public Collection<String> getDrawableShapeTypes() {
+    public List<ShapeType> getDrawableShapeTypes() {
         return drawableShapeTypes;
     }
 
@@ -83,11 +82,10 @@ public class AppFacade {
         return drawableOperations;
     }
 
-    public void onOperationSelection(String operation) {
+    public void onOperationSelection(Operation operation) {
         LOGGER.info("Operation: " + operation);
-        Operations o = Operations.labelOf(operation);
         clearPreviousSelection();
-        switch (o) {
+        switch (operation) {
             case SELECTION:
                 selectionEnabled = true;
                 break;
@@ -100,6 +98,8 @@ public class AppFacade {
             case REDO:
                 commandManager.redo();
                 break;
+            default:
+                throw new IllegalArgumentException("Operation not recognized: " + operation);
         }
     }
 
@@ -133,7 +133,7 @@ public class AppFacade {
     public void onShapeMenuOptionSelection(String shapeName) {
         LOGGER.info("Builder:shape: " + shapeName);
         clearPreviousSelection();
-        shapeBuilder.setShapeName(shapeName);
+        shapeBuilder.setType(ShapeType.valueOf(shapeName));
     }
 
     private boolean isSelectionEnabled() {
@@ -196,6 +196,7 @@ public class AppFacade {
     public void newCanvas() {
         canvasSubject.clear();
         commandManager.clear();
+        canvasSubject.notifyObservers();
     }
 
 }

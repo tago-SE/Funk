@@ -1,9 +1,6 @@
 package ObjectPainterApp;
 
-import ObjectPainterApp.model.AppFacade;
-import ObjectPainterApp.model.CanvasSubject;
-import ObjectPainterApp.model.Config;
-import ObjectPainterApp.model.IFileManager;
+import ObjectPainterApp.model.*;
 import ObjectPainterApp.model.menus.MenuComponent;
 import ObjectPainterApp.model.menus.MenuFactory;
 import ObjectPainterApp.model.shapes.Shape;
@@ -32,7 +29,7 @@ import java.util.logging.Logger;
 import static ObjectPainterApp.model.Config.LINE_WIDTH_OPTIONS;
 
 
-public class PrimaryController implements Initializable, IObserver, IController {
+public class PrimaryController implements Initializable, IObserver {
 
     private static final Logger LOGGER = Logger.getLogger(PrimaryController.class.getName());
 
@@ -68,13 +65,14 @@ public class PrimaryController implements Initializable, IObserver, IController 
             for (ToggleButton button : operationMenuButtons) {
                     menuBox.getChildren().add(button);
                     button.setOnAction(e -> {
-                        appFacade.onOperationSelection(button.getId());
+                        appFacade.onOperationSelection(Operation.labelOf(button.getId()));
                     });
             }
 
             // Setup the shape buttons
             for (ToggleButton button : ShapeMenuButtonFactory.getInstance()
-                    .createShapeMenuButtons(this, appFacade.getDrawableShapeTypes(), BUTTON_SIZE)) {
+                    .createShapeMenuButtons(this, BUTTON_SIZE, appFacade.getDrawableShapeTypes())) {
+
                 objectsBox.getChildren().add(button);
                 button.setOnAction(e -> {
                     appFacade.onShapeMenuOptionSelection(button.getId());
@@ -83,7 +81,6 @@ public class PrimaryController implements Initializable, IObserver, IController 
 
             // Load Settings
             colorPicker.setValue(Color.web(Config.SHAPE_COLOR));
-
             setupMenuBar();
         });
     }

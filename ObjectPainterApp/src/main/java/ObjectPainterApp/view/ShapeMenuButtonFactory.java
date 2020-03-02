@@ -1,12 +1,12 @@
 package ObjectPainterApp.view;
 
+import ObjectPainterApp.model.shapes.factory.ShapeType;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.image.ImageView;
-import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -38,29 +38,31 @@ public class ShapeMenuButtonFactory {
      * Factory for creating Shape Menu Buttons that can be added to a Widget.
      *
      * @param initializable FXML Controller instance
-     * @param shapeNames Collection of strings representing the available shapes.
+     * @param types Type of shapes which the buttons are based on.
+     * @param buttonSize The size of the button
      * @return List containing the ToggleIconButton class
      */
-    public List<ToggleButton> createShapeMenuButtons(Initializable initializable, Collection<String> shapeNames, int size) {
+    public List<ToggleButton> createShapeMenuButtons(Initializable initializable, int buttonSize, List<ShapeType> types) {
         LOGGER.info("createShapeMenuButtons");
         List<ToggleButton> result = new ArrayList<>();
-        for (String shapeName : shapeNames) {
-            String shapeIconPath = getShapeIconPath(getShapeIconName(shapeName));
-            String resource = shapeToResource.get(shapeName);
+        for (ShapeType type : types) {
+            String resource = shapeToResource.get(type);
             if (resource == null) {
                 try {
-                    resource = getShapeIconResource(initializable, shapeIconPath);
-                    shapeToResource.put(shapeName, resource);
+                resource = ShapeImageLoader.getInstance().getShapeImageResource(initializable, type);
+                    shapeToResource.put(type.toString(), resource);
                 } catch (NullPointerException ne) {
-                    LOGGER.warning(String.format(FAILED_TO_LOAD_RESOURCE_ERR, shapeIconPath));
+                    LOGGER.warning(String.format(FAILED_TO_LOAD_RESOURCE_ERR, type));
                     resource = "";
                 }
             }
-            result.add(new IconToggleButton(resource, shapeName, size));
+            String id = type.toString();
+            result.add(new IconToggleButton(resource, id, buttonSize));
         }
         return result;
     }
 
+    /*
     private String getShapeIconName(String shapeName) {
         return shapeName.toLowerCase() + IMAGE_FORMAT;
     }
@@ -70,7 +72,8 @@ public class ShapeMenuButtonFactory {
     }
 
     private String getShapeIconResource(Initializable initializable, String shapeIconPath) {
-        return initializable.getClass().getResource(shapeIconPath).toExternalForm();
+       return initializable.getClass().getResource(shapeIconPath).toExternalForm();
     }
+    */
 
 }

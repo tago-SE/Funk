@@ -1,6 +1,7 @@
 package ObjectPainterApp.model.shapes;
 
 
+import ObjectPainterApp.model.shapes.factory.ShapeType;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -29,66 +30,35 @@ import java.io.Serializable;
  * 2. https://github.com/iluwatar/java-design-patterns/tree/master/prototype
  * 3. https://www.tutorialspoint.com/design_pattern/prototype_pattern.htm
  */
-public abstract class Shape implements Cloneable, IMemento, Serializable {
+public abstract class Shape implements Cloneable, IShapeMemento, Serializable {
 
-    private String id;
-    private String color;
-    boolean filled;
-    private int lineWidth;
-    double startX, startY, endX, endY;
-    private int lineDashes;
-
-    private static class ShapeMemento implements IMemento {
-        String color;
-        boolean filled;
-        int lineWidth;
-        double startX, startY, endX, endY;
-        int lineDashes;
-    }
+    protected ShapeState state = new ShapeState();
 
     public Shape() {
 
     }
 
-    public Shape(ShapeBuilder builder) {
-        rebuild(builder);
+    /**
+     * Returns the type of the shape
+     * @return
+     */
+    abstract public ShapeType getType();
+
+    public IShapeMemento getMemento() {
+        return state.clone();
     }
 
-    public IMemento getMemento() {
-        ShapeMemento state = new ShapeMemento();
-        state.color = this.getColor();
-        state.filled = this.isFilled();
-        state.lineWidth = this.getLineWidth();
-        state.startX = this.getStartX();
-        state.startY = this.getStartY();
-        state.endX = this.getEndX();
-        state.endY = this.getEndY();
-        state.lineDashes = this.getLineDashes();
-        return state;
-    }
-
-    public void setMemento(IMemento memento) {
-        ShapeMemento state = (ShapeMemento) memento;
-        setColor(state.color);
-        setLineWidth(state.lineWidth);
-        setFilled(state.filled);
-        setStartX(state.startX);
-        setStartY(state.startY);
-        setEndX(state.endX);
-        setEndY(state.endY);
-        setLineDashes(state.lineDashes);
-    }
-
-    public Shape rebuild(ShapeBuilder builder) {
-        this.color = builder.getColor();
-        this.filled = builder.isFillShape();
-        this.lineDashes = builder.getLineDashes();
-        this.lineWidth = builder.getLineWidth();
-        this.startX = builder.getStartX();
-        this.startY = builder.getStartY();
-        this.endX = builder.getEndX();
-        this.endY = builder.getEndY();
-        return this;
+    public void setMemento(IShapeMemento memento) {
+        ShapeState s = (ShapeState) memento;
+        state = new ShapeState()
+                .setColor(s.getColor())
+                .setFilled(s.isFilled())
+                .setLineDashes(s.getLineDashes())
+                .setLineWidth(s.getLineWidth())
+                .setStartX(s.getStartX())
+                .setStartY(s.getStartY())
+                .setEndX(s.getEndX())
+                .setEndY(s.getEndY());
     }
 
     // Prevent override
@@ -96,108 +66,102 @@ public abstract class Shape implements Cloneable, IMemento, Serializable {
         return this.getClass().getSimpleName().replace(Shape.class.getSimpleName(), "");
     }
 
-    // Prevent override
-    final public Shape setId(String id) {
-        this.id = id;
-        return this;
-    }
-
     public boolean intersects(Shape s) {
-        return !(this.startX > s.endX || this.endX < s.startX || this.startY > s.endY || this.endY < s.startY);
-    }
-
-    final public String getId() {
-        return this.id;
+        return !(this.getLeftX() > s.getRightX() ||
+                this.getRightX() < s.getLeftX() ||
+                this.getTopY() > s.getBotY() ||
+                this.getBotY() < s.getTopY());
     }
 
     public String getColor() {
-        return color;
+        return state.color;
     }
 
     public void setColor(String color) {
-        this.color = color;
+        state.color = color;
     }
 
     public boolean isFilled() {
-        return filled;
+        return state.filled;
     }
 
     public void setFilled(boolean fill) {
-        this.filled = fill;
+        state.filled = fill;
     }
 
     public int getLineWidth() {
-        return lineWidth;
+        return state.lineWidth;
     }
 
     public void setLineWidth(int lineWidth) {
-        this.lineWidth = lineWidth;
+        state.lineWidth = lineWidth;
     }
 
     public double getStartX() {
-        return startX;
+        return state.startX;
     }
 
     public void setStartX(double startX) {
-        this.startX = startX;
+        state.startX = startX;
     }
 
     public double getStartY() {
-        return startY;
+        return state.startY;
     }
 
     public void setStartY(double startY) {
-        this.startY = startY;
+        state.startY = startY;
     }
 
     public double getEndX() {
-        return endX;
+        return state.endX;
     }
 
     public void setEndX(double endX) {
-        this.endX = endX;
+        state.endX = endX;
     }
 
     public double getEndY() {
-        return endY;
+        return state.endY;
     }
 
     public void setEndY(double endY) {
-        this.endY = endY;
-    }
-
-    public double getLeftX() {
-        return Math.min(startX, endX);
-    }
-
-    public double getRightX() {
-        return Math.max(startX, endX);
-    }
-
-    public double getTopY() {
-        return Math.min(startY, endY);
-    }
-
-    public double getBotY() {
-        return Math.max(startY, endY);
+        state.endY = endY;
     }
 
     public int getLineDashes() {
-        return lineDashes;
+        return state.lineDashes;
     }
 
     public void setLineDashes(int lineDashes) {
-        this.lineDashes = lineDashes;
+        state.lineDashes = lineDashes;
+    }
+
+
+    public double getLeftX() {
+        return Math.min(state.startX, state.endX);
+    }
+
+    public double getRightX() {
+        return Math.max(state.startX, state.endX);
+    }
+
+    public double getTopY() {
+        return Math.min(state.startY, state.endY);
+    }
+
+    public double getBotY() {
+        return Math.max(state.startY, state.endY);
     }
 
     public double getCenterX() {
         // Don't use any of the above public methods internally as they may be changed in sub-types
-        return Math.abs(startX - endX)/2 + Math.min(startX, endX);
+        return Math.abs(state.startX - state.endX)/2 + Math.min(state.startX, state.endX);
     }
 
     public double getCenterY() {
         // Don't use any of the above public methods internally as they may be changed in sub-types
-        return Math.abs(startY - endY)/2 +  Math.min(startY, endY);
+        return Math.abs(state.startY - state.endY)/2 +  Math.min(state.startY, state.endY);
     }
 
     @Override
@@ -216,10 +180,11 @@ public abstract class Shape implements Cloneable, IMemento, Serializable {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     public void draw(GraphicsContext gc) {
+        String color = state.getColor();
         gc.setFill(Color.web(color));
         gc.setStroke(Color.web(color));
-        gc.setLineWidth(lineWidth);
-        gc.setLineDashes(lineDashes);
+        gc.setLineWidth(state.getLineWidth());
+        gc.setLineDashes(state.getLineDashes());
         drawShape(gc);
     }
 
@@ -228,17 +193,8 @@ public abstract class Shape implements Cloneable, IMemento, Serializable {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + '\'' + "{" +
-                "id=\'" + id + "\'" +
-                ", name=\'" + getName() + "\'" +
-                ", color='" + color + '\'' +
-                ", filled=" + filled +
-                ", lineWidth=" + lineWidth +
-                ", startX=" + startX +
-                ", startY=" + startY +
-                ", endX=" + endX +
-                ", endY=" + endY +
+        return "Shape{" +
+                "state=" + state +
                 '}';
     }
-
 }

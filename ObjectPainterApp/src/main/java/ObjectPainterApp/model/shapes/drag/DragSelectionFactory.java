@@ -2,6 +2,7 @@ package ObjectPainterApp.model.shapes.drag;
 
 import ObjectPainterApp.model.shapes.Shape;
 import ObjectPainterApp.model.shapes.ShapeBuilder;
+import ObjectPainterApp.model.shapes.factory.ShapeType;
 
 /**
  * Factory class for creating drag selection markers of a given size
@@ -14,7 +15,7 @@ public class DragSelectionFactory implements IShapeFactory {
     private DragSelectionFactory() {
         // We build a selection box prototype with the following default properties
         selectionBoxPrototype = new ShapeBuilder()
-                .setShapeName("Square")
+                .setType(ShapeType.RECTANGLE)
                 .setColor("0x000000ff")
                 .setLineWidth(1)
                 .setFillShape(false)

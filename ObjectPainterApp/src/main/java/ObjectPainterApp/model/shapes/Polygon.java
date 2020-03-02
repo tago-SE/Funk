@@ -2,21 +2,28 @@ package ObjectPainterApp.model.shapes;
 
 import javafx.scene.canvas.GraphicsContext;
 
-public class OctagonShape extends Shape {
+public abstract class Polygon extends Shape {
 
-    private final int sides = 8;
-    private double[] x = new double[sides];
-    private double[] y = new double[sides];
+    final int sides;
+    double[] x;
+    double[] y;
 
-    public OctagonShape() {
-        super();  // required
+    protected Polygon(int sides) {
+        super();
+        this.sides = sides;
+        this.x = new double[sides];
+        this.y = new double[sides];
     }
 
-    private void getVertices() {
+    protected void getVertices() {
+        double startX = getStartX();
+        double endX = getEndX();
+        double startY = getStartY();
+        double endY = getEndY();
         if (startX == endX && startY == endY)
             return;
-        double w = Math.abs(super.startX - super.endX);
-        double h = Math.abs(super.startY - super.endY);
+        double w = Math.abs(startX - endX);
+        double h = Math.abs(startY - endY);
         double radius = Math.min(w, h);
         for (int i = 0; i < sides; i++) {
             x[i] = getCenterX() + radius*Math.cos(2*Math.PI*i/sides);
@@ -26,10 +33,14 @@ public class OctagonShape extends Shape {
 
     @Override
     protected void drawShape(GraphicsContext gc) {
+        double startX = getStartX();
+        double endX = getEndX();
+        double startY = getStartY();
+        double endY = getEndY();
         if (startX == endX && startY == endY)
             return;
         getVertices();
-        if (super.filled)
+        if (super.isFilled())
             gc.fillPolygon(x, y, sides);
         else
             gc.strokePolygon(x, y, sides);
@@ -70,5 +81,5 @@ public class OctagonShape extends Shape {
         }
         return n;
     }
-
 }
+
