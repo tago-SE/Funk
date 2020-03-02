@@ -3,7 +3,7 @@ package ObjectPainterApp.model;
 import ObjectPainterApp.model.commands.*;
 import ObjectPainterApp.model.shapes.Shape;
 import ObjectPainterApp.model.shapes.ShapeBuilder;
-import ObjectPainterApp.model.shapes.drag.DragSelectionFactory;
+import ObjectPainterApp.model.shapes.factory.DragSelectionFactory;
 import ObjectPainterApp.model.shapes.factory.DrawableShapeFactory;
 import ObjectPainterApp.model.shapes.factory.ShapeType;
 import ObjectPainterApp.utils.IObserver;

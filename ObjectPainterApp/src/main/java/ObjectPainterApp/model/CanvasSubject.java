@@ -1,7 +1,7 @@
 package ObjectPainterApp.model;
 
 import ObjectPainterApp.model.shapes.*;
-import ObjectPainterApp.model.shapes.drag.DragSelectionFactory;
+import ObjectPainterApp.model.shapes.factory.DragSelectionFactory;
 import ObjectPainterApp.utils.IObserver;
 import ObjectPainterApp.utils.ISubject;
 
@@ -44,12 +44,7 @@ public class CanvasSubject implements ISubject {
             }
         }
         if (selectedShapes.getChildren().size() > 0) {
-            double x1 = selectedShapes.getLeftX() - 10;
-            double y1 = selectedShapes.getTopY() - 10;
-            double x2 = selectedShapes.getRightX() + 10;
-            double y2 = selectedShapes.getBotY() + 10;
-            Shape marker = DragSelectionFactory.getInstance().getDragSelectionBox(x1, y1, x2, y2);
-            selectedMarker.addChildren(marker);
+            selectedMarker.addChildren(DragSelectionFactory.getInstance().getDragSelectionBox(selectedShapes));
         }
     }
 

@@ -9,6 +9,7 @@ public interface IShapeFactory {
 
     Shape getShapePrototype(ShapeType type);
 
+
     /**
      * Returns a list of the shapes that this factory can produce.
      * @return

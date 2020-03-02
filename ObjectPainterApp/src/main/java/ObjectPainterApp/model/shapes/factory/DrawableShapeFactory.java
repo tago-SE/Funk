@@ -11,7 +11,6 @@ public class DrawableShapeFactory implements IShapeFactory {
     private List<Shape> shapes = new ArrayList<>();
 
     public DrawableShapeFactory() {
-
         shapes.add(new Line());
         shapes.add(new Rectangle());
         shapes.add(new Oval());
