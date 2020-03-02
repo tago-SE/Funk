@@ -15,6 +15,5 @@ public class Octagon extends Polygon {
         return ShapeType.OCTAGON;
     }
 
-
 }
 

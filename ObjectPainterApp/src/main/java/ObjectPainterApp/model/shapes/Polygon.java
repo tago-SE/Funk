@@ -13,6 +13,7 @@ public abstract class Polygon extends Shape {
         this.sides = sides;
         this.x = new double[sides];
         this.y = new double[sides];
+        this.x[0] = Integer.MAX_VALUE;
     }
 
     protected void getVertices() {

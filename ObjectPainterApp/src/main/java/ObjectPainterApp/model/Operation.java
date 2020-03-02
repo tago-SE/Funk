@@ -1,31 +1,33 @@
 package ObjectPainterApp.model;
 
-import java.util.ArrayList;
-import java.util.List;
+public class Operation implements IOperation {
 
-public enum Operation {
+    private final Object data;
+    private final OperationType name;
 
-    UNDO("undo"),
-    REDO("redo"),
-    DELETE ("delete"),
-    SELECTION("selection");
-
-    public final String label;
-
-    Operation(String label) {
-        this.label = label;
+    public Operation(OperationType type) {
+        this.name = type;
+        this.data = null;
     }
 
-    public static List<String> labels() {
-        List<String> resultList = new ArrayList<>();
-        for (Operation o : values()) {
-            resultList.add(o.label);
-        }
-        return resultList;
+    public Operation(OperationType type, Object data) {
+        this.name = type;
+        this.data = data;
     }
 
-    public static Operation labelOf(String label) {
-        return Operation.valueOf(label.toUpperCase());
+    @Override
+    public OperationType getName() {
+        return name;
+    }
+
+    @Override
+    public boolean hasData() {
+        return data != null;
+    }
+
+    @Override
+    public Object getData() {
+        return data;
     }
 
 }

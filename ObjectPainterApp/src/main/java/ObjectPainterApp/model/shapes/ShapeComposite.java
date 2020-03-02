@@ -125,9 +125,4 @@ public class ShapeComposite extends Shape implements IShapeComposite {
         throw new IllegalArgumentException("Composite does not have a memento");
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return false; // Current implementation does not support equality.
-    }
-
 }

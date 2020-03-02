@@ -18,8 +18,6 @@ public class ShapeMenuButtonFactory {
 
     private static final Logger LOGGER = Logger.getLogger(ShapeMenuButtonFactory.class.getName());
 
-    private static final String SHAPES_RESOURCE_DIRECTORY = "images/shapes";
-    private static final String IMAGE_FORMAT = ".png";
     private static final String FAILED_TO_LOAD_RESOURCE_ERR = "Resource not found: %s.";
 
     private static ShapeMenuButtonFactory instance = null;
@@ -61,19 +59,5 @@ public class ShapeMenuButtonFactory {
         }
         return result;
     }
-
-    /*
-    private String getShapeIconName(String shapeName) {
-        return shapeName.toLowerCase() + IMAGE_FORMAT;
-    }
-
-    private String getShapeIconPath(String shapeIconName) {
-        return SHAPES_RESOURCE_DIRECTORY + "/" + shapeIconName;
-    }
-
-    private String getShapeIconResource(Initializable initializable, String shapeIconPath) {
-       return initializable.getClass().getResource(shapeIconPath).toExternalForm();
-    }
-    */
 
 }
