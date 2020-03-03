@@ -13,14 +13,8 @@ public class PaintShapesCommand extends BaseModifyShapesCommand {
     }
 
     @Override
-    public ICommand doAction() {
-        for (Shape shape : shapes) {
-            mementos.add(shape.getMemento());
-            shape.setColor(color);
-        }
-        canvas.clearSelection();
-        canvas.notifyObservers();
-        return this;
+    protected void onShapeModification(Shape shape) {
+        shape.setColor(color);
     }
 
     @Override

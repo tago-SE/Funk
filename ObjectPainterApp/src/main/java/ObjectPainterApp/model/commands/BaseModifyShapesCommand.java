@@ -10,9 +10,9 @@ import java.util.List;
 
 public abstract class BaseModifyShapesCommand implements ICommand {
 
-    protected final Collection<Shape> shapes;
-    protected final List<IShapeMemento> mementos = new ArrayList<>();
-    protected final CanvasSubject canvas;
+    private final Collection<Shape> shapes;
+    private final List<IShapeMemento> mementos = new ArrayList<>();
+    private final CanvasSubject canvas;
 
     BaseModifyShapesCommand(CanvasSubject canvas) {
         this.canvas = canvas;
@@ -20,12 +20,23 @@ public abstract class BaseModifyShapesCommand implements ICommand {
     }
 
     @Override
-    public abstract ICommand doAction();
+    public ICommand doAction() {
+        for (Shape shape : shapes) {
+            mementos.add(shape.getMemento());  // save state
+            onShapeModification(shape);
+        }
+        canvas.clearSelection();
+        canvas.notifyObservers();
+        return this;
+    }
+
+    abstract protected void onShapeModification(Shape shape);
 
     @Override
     public ICommand undoAction() {
         int index = 0;
-        for (Shape shape : shapes) shape.setMemento(mementos.get(index++));
+        for (Shape shape : shapes)
+            shape.setMemento(mementos.get(index++)); // restores state
         canvas.clearSelection();
         canvas.notifyObservers();
         return this;

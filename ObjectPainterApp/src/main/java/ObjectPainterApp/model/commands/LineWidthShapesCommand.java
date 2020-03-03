@@ -13,14 +13,8 @@ public class LineWidthShapesCommand extends BaseModifyShapesCommand {
     }
 
     @Override
-    public ICommand doAction() {
-        for (Shape shape : shapes) {
-            mementos.add(shape.getMemento());
-            shape.setLineWidth(lineWidth);
-        }
-        canvas.clearSelection();
-        canvas.notifyObservers();
-        return this;
+    protected void onShapeModification(Shape shape) {
+        shape.setLineWidth(lineWidth);
     }
 
     @Override
