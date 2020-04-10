@@ -65,7 +65,8 @@ public class PrimaryController implements Initializable, IObserver {
             for (ToggleButton button : operationMenuButtons) {
                     menuBox.getChildren().add(button);
                     button.setOnAction(e -> {
-                        appFacade.onOperationSelection(Operation.labelOf(button.getId()));
+                        OperationType opType = OperationType.valueOf(button.getId().toUpperCase());
+                        appFacade.onOperation(new Operation(opType));
                     });
             }
 
@@ -85,7 +86,7 @@ public class PrimaryController implements Initializable, IObserver {
         });
     }
 
-    // @TODO: Does recreating the file menu cause OnAction leaks?
+    // @ TODO: Does recreating the file menu cause OnAction leaks?
     private void setupMenuBar() {
         menuBar.getMenus().clear();
         MenuComponent fileMenu = MenuFactory.getInstance().getFileMenu();
@@ -117,17 +118,18 @@ public class PrimaryController implements Initializable, IObserver {
         App.setRoot("secondary");
     }
 
+
     public void onColorSelection(ActionEvent actionEvent) {
-        Color c = colorPicker.getValue();
-        appFacade.onColorSelection(c.toString());
+        appFacade.onOperation(new Operation(OperationType.SET_COLOR, colorPicker.getValue().toString()));
     }
 
     public void onFillSelection(ActionEvent actionEvent) {
-        appFacade.onFillShapeSelection(fill.isSelected());
+        appFacade.onOperation(new Operation(OperationType.SET_FILL, fill.isSelected()));
     }
 
     public void setLineWidth(ActionEvent actionEvent) {
-        appFacade.onLineWidthSelection(Integer.parseInt((String) lineWidthSelectionList.getValue()));
+        int value = Integer.parseInt((String) lineWidthSelectionList.getValue());
+        appFacade.onOperation(new Operation(OperationType.SET_LINE, value));
     }
 
     public void onCanvasMouseDrag(MouseEvent mouseEvent) {

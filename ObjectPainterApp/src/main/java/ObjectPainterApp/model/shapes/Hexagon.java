@@ -12,4 +12,5 @@ public class Hexagon extends Polygon {
     public ShapeType getType() {
         return ShapeType.HEXAGON;
     }
+
 }

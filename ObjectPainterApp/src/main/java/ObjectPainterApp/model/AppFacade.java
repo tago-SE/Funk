@@ -71,7 +71,7 @@ public class AppFacade {
     }
 
     private void loadDrawableOperations() {
-        drawableOperations = Operation.labels();
+        drawableOperations = OperationLabel.labels();
     }
 
     public List<ShapeType> getDrawableShapeTypes() {
@@ -82,10 +82,10 @@ public class AppFacade {
         return drawableOperations;
     }
 
-    public void onOperationSelection(Operation operation) {
-        LOGGER.info("Operation: " + operation);
+    public void onOperation(IOperation operation) {
+        System.out.println(operation.getName());
         clearPreviousSelection();
-        switch (operation) {
+        switch (operation.getName()) {
             case SELECTION:
                 selectionEnabled = true;
                 break;
@@ -98,13 +98,20 @@ public class AppFacade {
             case REDO:
                 commandManager.redo();
                 break;
+            case SET_COLOR: onColorSelection((String) operation.getData());
+                break;
+            case SET_FILL:
+                onFillShapeSelection((boolean) operation.getData());
+                break;
+            case SET_LINE: onLineWidthSelection((int) operation.getData());
+                break;
             default:
                 throw new IllegalArgumentException("Operation not recognized: " + operation);
         }
+        clearSelection();
     }
 
-    // TODO: Merge with onOperationSelection
-    public void onColorSelection(String color) {
+    private void onColorSelection(String color) {
         LOGGER.info("Builder:color: " + color);
         if (canvasSubject.getSelectedShapes().size() > 0) {
             commandManager.execute(new PaintShapesCommand(color, canvasSubject));
@@ -112,8 +119,7 @@ public class AppFacade {
         shapeBuilder.setColor(color);
     }
 
-    // TODO: Merge with onOperationSelection
-    public void onLineWidthSelection(int lineWidth) {
+    private void onLineWidthSelection(int lineWidth) {
         LOGGER.info("Builder:lineWidth: " + lineWidth);
         if (canvasSubject.getSelectedShapes().size() > 0) {
             commandManager.execute(new LineWidthShapesCommand(lineWidth, canvasSubject));
@@ -121,8 +127,8 @@ public class AppFacade {
         shapeBuilder.setLineWidth(lineWidth);
     }
 
-    // TODO: Merge with onOperationSelection
-    public void onFillShapeSelection(boolean fill) {
+    private void onFillShapeSelection(boolean fill) {
+        LOGGER.info("Builder:fill: " + fill);
         if (canvasSubject.getSelectedShapes().size() > 0) {
             commandManager.execute(new FillShapesCommand(fill, canvasSubject));
         }
@@ -158,7 +164,6 @@ public class AppFacade {
 
     public void onCanvasDrag(double x, double y) {
         if (lastBuiltShape != null) {
-            LOGGER.info("updating lastBuiltShape");
             lastBuiltShape.setEndX(x);
             lastBuiltShape.setEndY(y);
             canvasSubject.notifyObservers();
@@ -167,7 +172,6 @@ public class AppFacade {
 
     public void onCanvasDragEnded(double endX, double endY) {
         if (lastBuiltShape != null) {
-            LOGGER.info("updating lastBuiltShape");
             lastBuiltShape.setEndX(endX);
             lastBuiltShape.setEndY(endY);
             if (isSelectionEnabled()) {
