@@ -43,75 +43,125 @@
 -author("tiago").
 
 %% API
--export([start/0, stop/0, listen/0, write/2, delete/1, read/1, match/1]).
-
+-export([finish/0, listen/1, start/0, write/2, print/0, delete/1, read/1, match/1]).
 
 %% Start the server.
 -spec start() -> ok.
 start() ->
-  register(echo, spawn(?MODULE, listen, [])).
+  Db0 = init_db([{curt,1},{bert,2},{sune,3}]),
+  io:format("~p ok\n", [Db0]),
+  register(?MODULE, spawn(?MODULE, listen, [Db0])).
 
+
+%% TEST CODE
+init_db([]) ->
+  tree:new();
+init_db(Vals = [_Head | _Tail]) ->
+  Db0 = tree:new(),
+  write_db(Vals, Db0).
+
+%% write_db([{Key,Val}], Database) -> Database.e
+%%  Writes in all key-val into existing database.
+write_db([Head | Tail], Db) ->
+  {Key, Element} = Head,
+  Db1 = tree:write(Key, Element, Db),
+  write_db(Tail, Db1);
+
+write_db([], Db) ->
+  io:format(" - ok\n"),
+  Db.
+
+%% END TEST CODE
 
 %% Stops the server.
--spec stop() -> ok.
-stop()->
-  echo ! stop,
+-spec finish() -> ok.
+finish() ->
+  ?MODULE ! {finish, self()},
   ok.
 
 
-%% Write to the server repository, storing element at key location.
+%% Client: Request write to the server repository, storing element at key location.
 -spec write(term(), term()) -> ok.
 write(Key, Element) ->
-  echo ! {write, Key, Element},
+  io:format("Client write: Key=~p Value=~p\n", [Key, Element]),
+  ?MODULE ! {write, Key, Element},
+  ok.
+
+
+%% Client: Write to the server repository, storing element at key location.
+-spec print() -> ok.
+print() ->
+  io:format("Client print\n"),
+  ?MODULE ! {print},
   ok.
 
 
 %% Delete from the server repository by key.
 -spec delete(term()) -> ok.
 delete(Key) ->
-  echo ! {delete, Key},
+  ?MODULE ! {delete, Key},
   ok.
 
 
 %% Read from the server repository by key.
 -spec read(term()) -> ok.
 read(Key) ->
-  echo ! {read, Key}.
-
-
-%% List all matching elements
--spec match(term()) -> ok.
-match(Element) ->
-  echo ! {match, Element}.
-
-
-%% The server loop
--spec listen() -> true.
-listen()->
+  % Self is used to pass the PID to be able to respond to the client.
+  ?MODULE ! {read, Key, self()},
   receive
-    {write, Key, Element} ->
-      io:format("K=~p, E=~p~n",[Key, Element]),
-      listen();
-
-    {delete, Key} ->
-      io:format("Delete=~p~n",[Key]),
-      listen();
-
-    {read, Key} ->
-      io:format("Read=~p~n",[Key]),
-      echo ! {reply, ok, "Element"},
-      listen();
-
-    {match, Element} ->
-      io:format("Match=~p~n",[Element]),
-      echo ! {reply, ok, "Element"},
-      listen();
-
-    stop -> %% terminates the server
-      io:format("Stopping Server...~n"),
-      true
+    {reply, Db } -> Db;
+    {error, Reason} -> {error, Reason}
   end.
 
 
+%% List all keys of matching query element
+-spec match(term()) -> ok.
+match(Element) ->
+  ?MODULE ! {match, Element, self()},
+  receive
+    {reply, Db } -> Db;
+    {error, Reason} -> {error, Reason}
+  end.
+
+
+%% Server main loop listens to client commands
+listen(Db)->
+  receive
+
+    {print} ->
+      io:format("DB: ~p~n", [Db]),
+      listen(Db);
+
+    {write, Key, Element} ->
+      Db1 = tree:write(Key, Element, Db),
+      listen(Db1);
+
+    {delete, Key} ->
+      io:format("Delete=~p~n",[Key]),
+      Db1 = tree:delete(Key, Db),
+      listen(Db1);
+
+    {read, Key, ClientProcessId} ->
+      io:format("Read=~p~n",[Key]),
+      Result = tree:read(Key, Db),
+      if
+        Result == undefined ->
+          Error = {error, undefined},
+          ClientProcessId ! {error, Error};
+        true ->
+          ClientProcessId ! {reply, Result}
+      end,
+      listen(Db);
+
+    {match, Element, ClientProcessId} ->
+      Result = tree:match(Element, Db),
+      ClientProcessId ! {reply, Result},
+      listen(Db);
+
+    {finish, ClientProcessId} ->
+      io:format("Server stopped~n"),
+      true
+
+  end.
 
 

@@ -5,6 +5,9 @@
 %%%
 %%% @end
 %%% Created : 28. mars 2020 21:29
+
+%%% Example Code
+%%% Concurrency semantics - Spawns processes, passes messages, registering and termination.
 %%%-------------------------------------------------------------------
 -module(tut15).
 -author("tiago").

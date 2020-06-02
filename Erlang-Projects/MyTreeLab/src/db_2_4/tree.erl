@@ -10,11 +10,12 @@
 -module(tree).
 -author("Tiago Redaelli").
 
+-define(EMPTY_TREE, {null}).
 %% API
 -export([new/0, write/3, delete/2, destroy/1, match/2, read/2, print/1]).
 -export_type([tree/0]).
 -type tree() :: tuple().
--define(EMPTY_TREE, {null}).
+
 
 
 %% @doc Create a new database

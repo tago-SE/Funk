@@ -36,7 +36,7 @@
 
 all() ->
     io:format("Tree test...\n"),
-    %insert_print_all()
+    insert_print_all(),
     insert_read_all(),
     insert_delete_one(),
     insert_delete_all(),
