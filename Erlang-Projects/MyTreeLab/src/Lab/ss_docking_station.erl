@@ -18,7 +18,7 @@
 -author("tiago").
 
 %% API functions
--export([init/1, handle_call/3, start_link/3, release_scooter/1, secure_scooter/1, terminate/2, get_info/1, handle_event/3, handle_cast/2]).
+-export([init/1, handle_call/3, start_link/3, release_scooter/1, secure_scooter/1, terminate/2, get_info/1, handle_event/3, handle_cast/2, start_link/0]).
 
 -behaviour(gen_server).
 %%--------------------------------------------------------------------
@@ -41,7 +41,12 @@ start_link(Total, _Occupied, _Name) when Total =< 0 ->
 start_link(Total, Occupied, _Name) when Occupied > Total ->
   {error, "Occupied must be less than or equal to Total"};
 start_link(Total, Occupied, Name) ->
-  {ok, Pid} = gen_server:start_link(?MODULE, {Total, Occupied, Name}, []).
+  {ok, _Pid} = gen_server:start_link(?MODULE, {Total, Occupied, Name}, []).
+
+%% Debug starting function
+start_link() ->
+  io:format("Default docking station started...~n"),
+  {ok, _Pid} = gen_server:start_link(?MODULE, {10, 0, ""}, []).
 
 %% @doc
 %% Releases a scooter from the docking station. Returns the atom ok on success or the tuple {error, empty} if there are
@@ -87,7 +92,7 @@ terminate(normal, _State) ->
 
 handle_call(help, _From, Data) ->
   {Total, Occupied, _Name, State} = Data,
-  Response = [{total, Total}, {occupied, Occupied}, {state, State}],
+  Response = [{total, Total}, {occupied, Occupied}, {state, State}, {free, Total - Occupied}],
   {reply, {ok, Response}, Data};
 handle_call(release, _From, Data) ->
   handle_event(release, get_state(Data), Data);
