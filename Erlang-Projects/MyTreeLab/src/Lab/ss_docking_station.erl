@@ -17,36 +17,58 @@
 -module(ss_docking_station).
 -author("tiago").
 
-%% API
--export([init/1, handle_call/3, start_link/3, release_scooter/1, secure_scooter/1, terminate/2, get_info/1, handle_event/3]).
+%% API functions
+-export([init/1, handle_call/3, start_link/3, release_scooter/1, secure_scooter/1, terminate/2, get_info/1, handle_event/3, handle_cast/2]).
 
 -behaviour(gen_server).
-
-%% Starts a docking station server
-% Example usage:
-%   Pid = ss_docking_station:start_link(100, 0, "DockOne").
-%
-%   Conditional: Total > 0 and Occupied <= Total
+%%--------------------------------------------------------------------
+%% @doc
+%% Creates a docking station server which calls Module:init/1 to initialize.
+%% To ensure a synchronized start-up procedure, this function does not return
+%% until Module:init/1 has returned.
+%%
+%% Example usage:
+%%   Pid = ss_docking_station:start_link(100, 0, "DockOne").
+%%
+%% @spec start_link(Total, Occupied, Name) -> {ok, Pid} | {error, Error}
+%%
+%% Conditional: Total > 0 and Occupied <= Total
+%%
+%% @end
+%%--------------------------------------------------------------------
 start_link(Total, _Occupied, _Name) when Total =< 0 ->
   {error, "Total must be greater than 0"};
 start_link(Total, Occupied, _Name) when Occupied > Total ->
   {error, "Occupied must be less than or equal to Total"};
 start_link(Total, Occupied, Name) ->
-  {ok, Pid} = gen_server:start_link(?MODULE, {Total, Occupied, Name}, []),
-  Pid.
+  {ok, Pid} = gen_server:start_link(?MODULE, {Total, Occupied, Name}, []).
 
-
+%% @doc
+%% Releases a scooter from the docking station. Returns the atom ok on success or the tuple {error, empty} if there are
+%% no scooters available in the docking station.
+%%
+%% @spec release_scooter(Pid) -> ok | {error, empty}
+%% @end
 release_scooter(Pid) ->
   gen_server:call(Pid, release).
 
-
+%% @doc
+%% Secure scooter is used to park a scooter in the docking station. Returns the atom ok on success or the tuple
+%% {error, full} if there where no empty docking stations in which to secure the scooter.
+%%
+%% @spec secure_scooter(Pid) -> ok | {error, full}
+%% @end
 secure_scooter(Pid) ->
   gen_server:call(Pid, secure).
 
-
+%% @doc
+%% Returns information about the docking station. Such as total number of docking points and how many are occupied,
+%% the name of the docking station and the current state.
+%%
+%% @spec secure_scooter(Pid) -> ok | {error, full}
+%% @end
 get_info(Pid) ->
   gen_server:call(Pid, help).
-
 
 %%%-------------------------------------------------------------------
 %%   Server Side
@@ -59,15 +81,17 @@ init(Args) ->
   io:format("Server_onInit ~p ~n", [Data]),
   {ok,  Data}.
 
+terminate(normal, _State) ->
+  io:format("Docking station ended.~n"),
+  ok.
 
 handle_call(help, _From, Data) ->
-  io:format("Server_onHelp: ~p~n", [Data]),
-  {reply, ok, Data};
+  {Total, Occupied, _Name, State} = Data,
+  Response = [{total, Total}, {occupied, Occupied}, {state, State}],
+  {reply, {ok, Response}, Data};
 handle_call(release, _From, Data) ->
-  io:format("Server_onRelease: ~p~n", [Data]),
   handle_event(release, get_state(Data), Data);
 handle_call(secure, _From, Data) ->
-  io:format("Server_onSecure: ~p~n", [Data]),
   handle_event(secure, get_state(Data), Data).
 
 %%%===================================================================
@@ -113,11 +137,6 @@ full(Event, Data) when Event == release ->
   NewData = {Total, Occupied - 1, Name, calc_state(Total, Occupied - 1)},
   {reply, {ok, NewData}, NewData}.
 
-
-terminate(normal, _State) ->
-  io:format("Docking station ended.~n"),
-  ok.
-
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
@@ -132,3 +151,6 @@ calc_state(_Total, Occupied) when Occupied == 0 ->
   empty;
 calc_state(Total, Occupied) when Occupied < Total ->
   idle.
+
+handle_cast(Request, State) ->
+  erlang:error(not_implemented).
