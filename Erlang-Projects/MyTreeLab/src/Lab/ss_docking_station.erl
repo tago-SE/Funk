@@ -18,7 +18,7 @@
 -author("tiago").
 
 %% API functions
--export([init/1, handle_call/3, start_link/3, release_scooter/1, secure_scooter/1, terminate/2, get_info/1, handle_event/3, handle_cast/2, start_link/0]).
+-export([init/1, handle_call/3, start_link/3, release_scooter/1, secure_scooter/1, get_info/1, handle_event/3, handle_cast/2, start_link/0, suicide/1, crash/1, get_process_state/1, add_monitor/2]).
 
 -behaviour(gen_server).
 %%--------------------------------------------------------------------
@@ -75,6 +75,32 @@ secure_scooter(Pid) ->
 get_info(Pid) ->
   gen_server:call(Pid, help).
 
+%% @doc
+%% Returns the current state of the docking station.
+%%
+%% @spec get_process_state(Pid) -> State
+%% @end
+get_process_state(Pid) ->
+  gen_server:call(Pid, get_state).
+
+%% @doc
+%% Adds a monitor to the docking server which is notified on state changes.
+%%
+%% @spec add_monitor(MonitorPid) -> ok.
+%% @end
+add_monitor(Pid, MonitorPid) ->
+  gen_server:call(Pid, {add_monitor, MonitorPid}).
+
+
+%% Testing purposes
+suicide(Pid) ->
+  gen_server:call(Pid, suicide).
+
+%% Testing purposes
+crash(Pid) ->
+  gen_server:cast(Pid, crash).
+
+
 %%%-------------------------------------------------------------------
 %%   Server Side
 %%%-------------------------------------------------------------------
@@ -82,20 +108,33 @@ get_info(Pid) ->
 %% Allocates the state of the docking station on setup
 init(Args) ->
   {Total, Occupied, Name} = Args,
-  Data = {Total, Occupied, Name, calc_state(Total, Occupied)},
+  Data = {Total, Occupied, Name, calc_state(Total, Occupied), none},
   io:format("Server_onInit ~p ~n", [Data]),
   {ok,  Data}.
 
-terminate(normal, _State) ->
-  io:format("Docking station ended.~n"),
-  ok.
-
 handle_call(help, _From, Data) ->
-  {Total, Occupied, _Name, State} = Data,
+  {Total, Occupied, _Name, State, _Monitor} = Data,
   Response = [{total, Total}, {occupied, Occupied}, {state, State}, {free, Total - Occupied}],
   {reply, {ok, Response}, Data};
+
+handle_call({add_monitor, MonitorPid}, _From, Data) ->
+  {Total, Occupied, Name, State, _Monitor} = Data,
+  NewData = {Total, Occupied, Name, State, MonitorPid},
+  io:format("Monitor added: ~p~n", [MonitorPid]),
+  MonitorPid ! {update, NewData},
+  io:format("after monitor was added...~n"),
+  {reply, ok, NewData};
+
+handle_call(get_state, _From, Data) ->
+  {reply, {ok, Data}, Data};
+
+handle_call(suicide, _From, _Data) ->
+  io:format("server_onSuicide: ~n"),
+  erlang:error(life_was_hard);
+
 handle_call(release, _From, Data) ->
   handle_event(release, get_state(Data), Data);
+
 handle_call(secure, _From, Data) ->
   handle_event(secure, get_state(Data), Data).
 
@@ -118,18 +157,22 @@ handle_event(Event, State, Data) when State == full ->
 %%%===================================================================
 
 idle(Event, Data)  when Event == secure ->
-  {Total, Occupied, Name, _State} = Data,
-  NewData = {Total, Occupied + 1, Name, calc_state(Total, Occupied + 1)},
+  {Total, Occupied, Name, _State, Monitor} = Data,
+  NewData = {Total, Occupied + 1, Name, calc_state(Total, Occupied + 1), Monitor},
+  Monitor ! {update, NewData},
   {reply, {ok, NewData}, NewData};
 idle(Event, Data)  when Event == release ->
-  {Total, Occupied, Name, _State} = Data,
-  NewData = {Total, Occupied - 1, Name, calc_state(Total, Occupied - 1)},
+  {Total, Occupied, Name, _State, Monitor} = Data,
+  NewData = {Total, Occupied - 1, Name, calc_state(Total, Occupied - 1), Monitor},
+  Monitor ! {update, NewData},
   {reply, {ok, NewData}, NewData}.
 
 
 empty(Event, Data)  when Event == secure ->
-  {Total, Occupied, Name, _State} = Data,
-  NewData = {Total, Occupied + 1, Name, calc_state(Total, Occupied + 1)},
+  {Total, Occupied, Name, _State, Monitor} = Data,
+  NewData = {Total, Occupied + 1, Name, calc_state(Total, Occupied + 1), Monitor},
+  io:format("NewData: ~p~n", [NewData]),
+  Monitor ! {update, NewData},
   {reply, {ok, NewData}, NewData};
 empty(Event, Data)  when Event == release ->
   {reply, {error, empty}, Data}.
@@ -138,16 +181,21 @@ empty(Event, Data)  when Event == release ->
 full(Event, Data) when Event == secure ->
   {reply, {error, full}, Data};
 full(Event, Data) when Event == release ->
-  {Total, Occupied, Name, _State} = Data,
-  NewData = {Total, Occupied - 1, Name, calc_state(Total, Occupied - 1)},
+  {Total, Occupied, Name, _State, Monitor} = Data,
+  NewData = {Total, Occupied - 1, Name, calc_state(Total, Occupied - 1), Monitor},
+  Monitor ! {update, NewData},
   {reply, {ok, NewData}, NewData}.
 
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
 
+on_update(Data) ->
+  {_Total, _Occupied, _Name, _State, MonitorId} = Data,
+  MonitorId ! {update, Data}.
+
 get_state(Data) ->
-  {_Total, _Occupied, _Name, State} = Data,
+  {_Total, _Occupied, _Name, State, _Monitor} = Data,
   State.
 
 calc_state(Total, Occupied) when Total == Occupied ->
@@ -157,5 +205,6 @@ calc_state(_Total, Occupied) when Occupied == 0 ->
 calc_state(Total, Occupied) when Occupied < Total ->
   idle.
 
-handle_cast(Request, State) ->
-  erlang:error(not_implemented).
+handle_cast(crash, State) ->
+  io:format("server_onHandleCast: ~p~n ", [crash]),
+  {stop, error, State}.
