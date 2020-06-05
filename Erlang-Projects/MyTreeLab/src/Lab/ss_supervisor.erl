@@ -24,7 +24,7 @@ start_link() ->
 start_child(Total, Occupied, Name) ->
   {ok, WorkerPid } = supervisor:start_child(?MODULE, [Total, Occupied, Name]),
   Monitor = spawn(?MODULE, monitor, [WorkerPid]),
- % Monitor ! update,   % Requests the monitor to fetch latest updates...
+  % Monitor ! update,   % Requests the monitor to fetch latest updates...
   ss_docking_station:add_monitor(WorkerPid, Monitor),
   {ok, WorkerPid}.
 
@@ -32,6 +32,7 @@ start_child(Total, Occupied, Name) ->
 monitor(Proc) ->
   io:format("Monitor started...~n"),
   erlang:monitor(process, Proc),
+  %% This is the DB that would be used if update messages were being received properly...
   {ok, DbRef} = my_gen_server:start_link(),
   receive
     {update, Data} ->

@@ -159,12 +159,12 @@ handle_event(Event, State, Data) when State == full ->
 idle(Event, Data)  when Event == secure ->
   {Total, Occupied, Name, _State, Monitor} = Data,
   NewData = {Total, Occupied + 1, Name, calc_state(Total, Occupied + 1), Monitor},
-  Monitor ! {update, NewData},
+  %Monitor ! {update, NewData},
   {reply, {ok, NewData}, NewData};
 idle(Event, Data)  when Event == release ->
   {Total, Occupied, Name, _State, Monitor} = Data,
   NewData = {Total, Occupied - 1, Name, calc_state(Total, Occupied - 1), Monitor},
-  Monitor ! {update, NewData},
+  %Monitor ! {update, NewData},
   {reply, {ok, NewData}, NewData}.
 
 
@@ -172,7 +172,7 @@ empty(Event, Data)  when Event == secure ->
   {Total, Occupied, Name, _State, Monitor} = Data,
   NewData = {Total, Occupied + 1, Name, calc_state(Total, Occupied + 1), Monitor},
   io:format("NewData: ~p~n", [NewData]),
-  Monitor ! {update, NewData},
+  %Monitor ! {update, NewData},
   {reply, {ok, NewData}, NewData};
 empty(Event, Data)  when Event == release ->
   {reply, {error, empty}, Data}.
@@ -183,16 +183,16 @@ full(Event, Data) when Event == secure ->
 full(Event, Data) when Event == release ->
   {Total, Occupied, Name, _State, Monitor} = Data,
   NewData = {Total, Occupied - 1, Name, calc_state(Total, Occupied - 1), Monitor},
-  Monitor ! {update, NewData},
+  %Monitor ! {update, NewData},
   {reply, {ok, NewData}, NewData}.
 
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
 
-on_update(Data) ->
-  {_Total, _Occupied, _Name, _State, MonitorId} = Data,
-  MonitorId ! {update, Data}.
+%on_update(Data) ->
+%  {_Total, _Occupied, _Name, _State, MonitorId} = Data,
+%&  MonitorId ! {update, Data}.
 
 get_state(Data) ->
   {_Total, _Occupied, _Name, State, _Monitor} = Data,
